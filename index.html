@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Sổ tay - Ghi chú và kho tệp GitHub</title>
 <meta name="author" content="Đặng Minh Đông">
+<meta name="version" content="1.0">
 <meta name="copyright" content="© 2026 Đặng Minh Đông">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -93,6 +94,7 @@ main{display:flex;flex-direction:column}
 .prog{height:5px;background:var(--line);border-radius:5px;margin-top:16px;overflow:hidden;display:none}
 .prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--acc),var(--acc2));border-radius:5px;transition:width .3s var(--ease)}
 .foot{padding:11px 18px;border-top:1px solid var(--line);text-align:center;color:var(--mute);font-size:13px}
+.ver{display:inline-block;background:var(--accsoft);color:var(--acc);border-radius:20px;padding:1px 10px;font-size:12px;font-weight:700;margin-left:6px}
 .foot b{color:var(--ink);font-weight:700}
 dialog{border:1px solid var(--line);border-radius:22px;background:var(--panel);color:var(--ink);padding:0;width:min(500px,92vw);box-shadow:0 40px 80px rgba(8,10,25,.4)}
 dialog[open]{animation:pop .28s var(--ease)}
@@ -184,7 +186,7 @@ aside.open~#scrim{opacity:1;pointer-events:auto}
       <div class="prog" id="prog"><i></i></div></div>
     <div id="fl"></div>
   </section>
-  <footer class="foot">© 2026 <b>Đặng Minh Đông</b>. Bảo lưu mọi quyền.</footer>
+  <footer class="foot">© 2026 <b>Đặng Minh Đông</b>. Bảo lưu mọi quyền. <span class="ver" id="ver"></span></footer>
 </main>
 </div>
 
@@ -220,6 +222,16 @@ aside.open~#scrim{opacity:1;pointer-events:auto}
   <div id="shPinW"><label>Link cố định theo phiên bản</label><div class="cp"><input id="shP" readonly><button class="btn" data-copy="shP">Sao chép</button></div></div>
   <p class="hint">jsDelivr chỉ hoạt động với repo công khai. Link theo nhánh có thể mất tới 12 giờ mới hiện nội dung mới; link cố định luôn trả đúng phiên bản vừa lưu.</p>
   <div class="dacts"><span id="shFile" class="acts"><button class="btn" id="shDown">Tải về</button><button class="btn dan" id="shDel">Xóa</button></span><button class="btn" id="shOpen">Mở link</button><button class="btn" id="shClose">Đóng</button></div>
+</div></dialog>
+<dialog id="delDlg"><div class="dform">
+  <h2>Xóa ghi chú</h2>
+  <p id="dnT" style="font-weight:700;color:var(--ink);margin-bottom:6px"></p>
+  <p>Ghi chú này đã được lưu trên GitHub tại <b id="dnP"></b>. Bạn muốn xóa ở đâu? Bản trên GitHub vẫn khôi phục được từ lịch sử commit.</p>
+  <div class="dacts" style="flex-direction:column;align-items:stretch">
+    <button class="btn dan" id="dnBoth">Xóa cả trên GitHub</button>
+    <button class="btn" id="dnLocal">Chỉ xóa trên máy này</button>
+    <button class="btn" id="dnCancel">Hủy</button>
+  </div>
 </div></dialog>
 <div id="toast" role="status"></div>
 
@@ -270,11 +282,24 @@ $('#title').oninput=$('#body').oninput=edit;
 $('#q').oninput=renderList;
 $('#list').onclick=e=>{const b=e.target.closest('.item');if(b)open(b.dataset.id)};
 $('#newBtn').onclick=create;
-$('#del').onclick=()=>{
-  if(!curId||!confirm('Xóa ghi chú này khỏi trình duyệt? (Bản đã đẩy lên GitHub vẫn được giữ lại)'))return;
-  notes=notes.filter(n=>n.id!==curId); save(); curId=null; renderList();
+function dropNote(id){
+  notes=notes.filter(n=>n.id!==id); save(); curId=null; renderList();
   notes.length?open([...notes].sort((a,b)=>b.updated-a.updated)[0].id):create();
+}
+$('#del').onclick=()=>{
+  const n=cur(); if(!n)return;
+  if(!n.gh){if(confirm('Xóa ghi chú này?'))dropNote(n.id);return}
+  $('#dnT').textContent=n.title||'Chưa đặt tiêu đề'; $('#dnP').textContent=n.gh; $('#delDlg').showModal();
 };
+$('#dnLocal').onclick=()=>{const n=cur();$('#delDlg').close();if(n){dropNote(n.id);toast('Đã xóa trên máy này, bản GitHub vẫn còn')}};
+$('#dnBoth').onclick=async()=>{
+  const n=cur(); if(!n||!await ready())return;
+  const b=$('#dnBoth'); b.disabled=true; b.textContent='Đang xóa…';
+  try{await remove(n.gh,'Xóa ghi chú: '+(n.title||n.gh)); $('#delDlg').close(); dropNote(n.id); toast('Đã xóa ghi chú trên cả GitHub')}
+  catch(e){toast('Không xóa được: '+e.message)}
+  b.disabled=false; b.textContent='Xóa cả trên GitHub';
+};
+$('#dnCancel').onclick=()=>$('#delDlg').close();
 const cur=()=>notes.find(n=>n.id===curId);
 $('#copy').onclick=async()=>{try{await navigator.clipboard.writeText($('#body').value);toast('Đã sao chép nội dung')}catch{toast('Trình duyệt không cho phép sao chép')}};
 $('#dl').onclick=()=>{const n=cur();const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([n.body],{type:'text/plain;charset=utf-8'}));a.download=fileName(n.title)+'.txt';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)};
@@ -287,16 +312,24 @@ const ready=async()=>{
 const persist=()=>{const c={...cfg};if(c.vault)delete c.token;store.set('so.cfg',c)};
 const safeFetch=(u,o)=>fetch(u,o).catch(()=>{throw new Error('Không kết nối được tới api.github.com. Kiểm tra mạng, hoặc trang đang chạy trong môi trường chặn kết nối ngoài.')});
 const jf=async r=>{const t=await r.text();try{return JSON.parse(t)}catch{throw new Error('Phản hồi không phải JSON (HTTP '+r.status+'): '+t.slice(0,90).replace(/\s+/g,' '))}};
-const api=(path,o={})=>safeFetch(`https://api.github.com/repos/${encodeURIComponent(cfg.owner)}/${encodeURIComponent(cfg.repo)}/contents/${path.split('/').filter(Boolean).map(encodeURIComponent).join('/')}${o.q||''}`,{method:o.method||'GET',body:o.body,headers:{Authorization:'Bearer '+cfg.token,Accept:'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'}});
+const api=(path,o={})=>safeFetch(`https://api.github.com/repos/${encodeURIComponent(cfg.owner)}/${encodeURIComponent(cfg.repo)}/contents/${path.split('/').filter(Boolean).map(encodeURIComponent).join('/')}${o.q||''}`,{method:o.method||'GET',body:o.body,cache:'no-store',headers:{Authorization:'Bearer '+cfg.token,Accept:'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'}});
 const errMsg=async r=>{try{return (await r.json()).message}catch{return 'Lỗi '+r.status}};
+async function getSha(path){
+  const r=await api(path,{q:'?ref='+encodeURIComponent(cfg.branch)+'&_='+Date.now()});
+  if(r.status===404)return null; if(!r.ok)throw new Error(await errMsg(r));
+  return (await jf(r)).sha;
+}
 async function put(path,b64,msg){
-  let sha; const ex=await api(path,{q:'?ref='+encodeURIComponent(cfg.branch)});
-  if(ex.ok){const j=await jf(ex);sha=j.sha}
+  const sha=await getSha(path);
   const r=await api(path,{method:'PUT',body:JSON.stringify({message:msg,content:b64,branch:cfg.branch,...(sha?{sha}:{})})});
   if(!r.ok)throw new Error(await errMsg(r));
   return await jf(r);
 }
-async function remove(path,msg){const ex=await api(path,{q:'?ref='+encodeURIComponent(cfg.branch)});if(!ex.ok)return;const {sha}=await jf(ex);await api(path,{method:'DELETE',body:JSON.stringify({message:msg,sha,branch:cfg.branch})})}
+async function remove(path,msg){
+  const sha=await getSha(path); if(!sha)return;
+  const d=await api(path,{method:'DELETE',body:JSON.stringify({message:msg,sha,branch:cfg.branch})});
+  if(!d.ok)throw new Error(await errMsg(d));
+}
 const utf8b64=s=>{const bytes=new TextEncoder().encode(s);let bin='';for(let i=0;i<bytes.length;i+=0x8000)bin+=String.fromCharCode.apply(null,bytes.subarray(i,i+0x8000));return btoa(bin)};
 const fileb64=f=>new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result.split(',')[1]);r.onerror=()=>rej(new Error('Không đọc được tệp'));r.readAsDataURL(f)});
 
@@ -307,7 +340,7 @@ $('#push').onclick=async()=>{
     const ext=n.gh&&/\.md$/i.test(n.gh)?'.md':'.txt';
     const path=`${cfg.notesDir||'notes'}/${fileName(n.title)}${ext}`;
     const res=await put(path,utf8b64(n.body),`Cập nhật ghi chú: ${n.title||'Chưa đặt tiêu đề'}`);
-    n.commit=res.commit&&res.commit.sha; if(n.gh&&n.gh!==path)await remove(n.gh,'Đổi tên ghi chú'); n.gh=path; save(); renderList(); toast('Đã lưu lên GitHub: '+path);
+    n.commit=res.commit&&res.commit.sha; if(n.gh&&n.gh!==path)await remove(n.gh,'Đổi tên ghi chú').catch(()=>{}); n.gh=path; save(); renderList(); toast('Đã lưu lên GitHub: '+path);
   }catch(e){toast('Không lưu được: '+e.message)}
   btn.disabled=false; $('#push .l').textContent='Lưu lên GitHub';
 };
@@ -371,7 +404,7 @@ $('#shClose').onclick=()=>$('#shDlg').close();
 $('#shDown').onclick=async()=>{
   const f=shCur.file; if(!await ready())return;
   try{
-    const r=await fetch(f.url,{headers:{Authorization:'Bearer '+cfg.token,Accept:'application/vnd.github.raw+json'}});
+    const r=await fetch(f.url,{cache:'no-store',headers:{Authorization:'Bearer '+cfg.token,Accept:'application/vnd.github.raw+json'}});
     if(!r.ok)throw new Error(await errMsg(r));
     const a=document.createElement('a');a.href=URL.createObjectURL(await r.blob());a.download=f.name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
   }catch(e){toast('Không tải được: '+e.message)}
@@ -408,7 +441,7 @@ $('#pull').onclick=async()=>{
     const files=(await jf(r)).filter(f=>f.type==='file'&&/\.(txt|md)$/i.test(f.name));
     let add=0,upd=0,skip=0;
     for(const f of files){
-      const rr=await fetch(f.url,{headers:{Authorization:'Bearer '+cfg.token,Accept:'application/vnd.github.raw+json'}});
+      const rr=await fetch(f.url,{cache:'no-store',headers:{Authorization:'Bearer '+cfg.token,Accept:'application/vnd.github.raw+json'}});
       if(!rr.ok)continue; const text=await rr.text();
       const n=notes.find(x=>x.gh===f.path);
       if(!n){notes.push({id:Date.now().toString(36)+add,title:f.name.replace(/\.(txt|md)$/i,''),body:text,updated:Date.now(),gh:f.path});add++}
@@ -458,6 +491,7 @@ document.addEventListener('keydown',e=>{
 });
 
 /* Init */
+$('#ver').textContent='v'+document.querySelector('meta[name=version]').content;
 renderList();
 notes.length?open([...notes].sort((a,b)=>b.updated-a.updated)[0].id):create();
 </script>
