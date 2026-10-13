@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Sổ tay - Ghi chú và kho tệp GitHub</title>
 <meta name="author" content="Đặng Minh Đông">
-<meta name="version" content="1.3">
+<meta name="version" content="1.4">
 <meta name="copyright" content="© 2026 Đặng Minh Đông">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -177,7 +177,7 @@ aside.open~#scrim{opacity:1;pointer-events:auto}
     <div class="st" id="stWrap"><span class="dot"></span><span id="saved">Sẵn sàng</span><span id="stat"></span></div>
     <span class="sp"></span>
     <div class="acts" id="noteActs">
-      <button class="btn" id="pull" title="Kéo từ GitHub"><svg class="i" viewBox="0 0 24 24"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 20h16"/></svg><span class="l">Kéo từ GitHub</span></button>
+      <button class="btn" id="pull" title="Đồng bộ từ GitHub"><svg class="i" viewBox="0 0 24 24"><path d="M3 12a9 9 0 019-9 9.75 9.75 0 016.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 01-9 9 9.75 9.75 0 01-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg><span class="l">Đồng bộ từ GitHub</span></button>
       <button class="btn" id="share" title="Chia sẻ link jsDelivr"><svg class="i" viewBox="0 0 24 24"><path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1"/></svg><span class="l">Chia sẻ</span></button>
       <button class="btn" id="copy" title="Sao chép"><svg class="i" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 012-2h9"/></svg><span class="l">Sao chép</span></button>
       <button class="btn" id="dl" title="Tải .txt"><svg class="i" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8z"/><path d="M14 3v5h5"/></svg><span class="l">Tải .txt</span></button>
@@ -465,7 +465,7 @@ const askPw=(t='Mở khóa token',m='Nhập mật khẩu bạn đã đặt để
 
 /* Kéo ghi chú từ GitHub */
 $('#pull').onclick=async()=>{
-  if(!await ready())return; const b=$('#pull'); b.disabled=true; $('#pull .l').textContent='Đang kéo…';
+  if(!await ready())return; const b=$('#pull'); b.disabled=true; $('#pull .l').textContent='Đang đồng bộ…';
   try{
     const r=await api(cfg.notesDir||'notes',{q:'?ref='+encodeURIComponent(cfg.branch)});
     if(r.status===404){toast('Chưa có thư mục ghi chú trên GitHub');return}
@@ -480,9 +480,9 @@ $('#pull').onclick=async()=>{
       else if(n.body!==text){if(confirm(`"${n.title||f.name}" khác bản trên GitHub. Ghi đè bản trên máy này?`)){n.body=text;n.updated=Date.now();upd++}else skip++}
     }
     save(); renderList(); if(curId)open(curId);
-    toast(`Đã kéo xong: ${add} mới, ${upd} cập nhật${skip?`, ${skip} giữ nguyên`:''}`);
-  }catch(e){toast('Không kéo được: '+e.message)}
-  finally{b.disabled=false;$('#pull .l').textContent='Kéo từ GitHub'}
+    toast(`Đã đồng bộ xong: ${add} mới, ${upd} cập nhật${skip?`, ${skip} giữ nguyên`:''}`);
+  }catch(e){toast('Không đồng bộ được: '+e.message)}
+  finally{b.disabled=false;$('#pull .l').textContent='Đồng bộ từ GitHub'}
 };
 
 /* Đăng nhập bằng file JSON */
