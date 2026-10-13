@@ -8,109 +8,135 @@
 <meta name="copyright" content="© 2026 Đặng Minh Đông">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#e9edf5;--g1:rgba(58,91,217,.14);--g2:rgba(20,184,166,.12);--panel:#fff;--soft:#f3f5fa;--ink:#101426;--mute:#69708a;--line:#e2e6f0;--acc:#3a5bd9;--acc-ink:#fff;--accsoft:#e8edff;--danger:#d93a3a;--sh:0 1px 2px rgba(16,20,38,.05),0 18px 40px -18px rgba(16,20,38,.22);--r:18px}
-@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#070a11;--g1:rgba(98,128,255,.14);--g2:rgba(20,184,166,.08);--panel:#10151f;--soft:#171d2b;--ink:#e8ecf7;--mute:#8a92ab;--line:#232b3b;--acc:#8aa4ff;--acc-ink:#0a0e1a;--accsoft:#1b2442;--danger:#ff7b7b;--sh:0 1px 2px rgba(0,0,0,.3),0 18px 40px -18px rgba(0,0,0,.6)}}
-:root[data-theme=dark]{--bg:#070a11;--g1:rgba(98,128,255,.14);--g2:rgba(20,184,166,.08);--panel:#10151f;--soft:#171d2b;--ink:#e8ecf7;--mute:#8a92ab;--line:#232b3b;--acc:#8aa4ff;--acc-ink:#0a0e1a;--accsoft:#1b2442;--danger:#ff7b7b;--sh:0 1px 2px rgba(0,0,0,.3),0 18px 40px -18px rgba(0,0,0,.6)}
-*{box-sizing:border-box}
+:root{--f:"Quicksand",system-ui,-apple-system,"Segoe UI",sans-serif;--bg:#e8ecf5;--g1:rgba(58,91,217,.16);--g2:rgba(20,184,166,.13);--glass:rgba(255,255,255,.74);--panel:#fff;--soft:#f2f4fa;--ink:#0f1326;--mute:#667089;--line:#e0e5f0;--acc:#3a5bd9;--acc2:#2a8bd8;--acc-ink:#fff;--accsoft:#e7ecff;--danger:#d93a3a;--sh:0 1px 2px rgba(15,19,38,.05),0 24px 48px -20px rgba(15,19,38,.25);--r:20px;--ease:cubic-bezier(.2,.8,.2,1)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#060912;--g1:rgba(98,128,255,.16);--g2:rgba(20,184,166,.09);--glass:rgba(16,21,31,.72);--panel:#10151f;--soft:#171d2b;--ink:#e9edf8;--mute:#8b93ac;--line:#242c3d;--acc:#8aa4ff;--acc2:#7cc4ff;--acc-ink:#0a0e1a;--accsoft:#1b2442;--danger:#ff7b7b;--sh:0 1px 2px rgba(0,0,0,.3),0 24px 48px -20px rgba(0,0,0,.7)}}
+:root[data-theme=dark]{--bg:#060912;--g1:rgba(98,128,255,.16);--g2:rgba(20,184,166,.09);--glass:rgba(16,21,31,.72);--panel:#10151f;--soft:#171d2b;--ink:#e9edf8;--mute:#8b93ac;--line:#242c3d;--acc:#8aa4ff;--acc2:#7cc4ff;--acc-ink:#0a0e1a;--accsoft:#1b2442;--danger:#ff7b7b;--sh:0 1px 2px rgba(0,0,0,.3),0 24px 48px -20px rgba(0,0,0,.7)}
+*{box-sizing:border-box;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
 html,body{height:100%;margin:0}
-body{font:15px/1.55 "Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink);background:radial-gradient(900px 520px at 8% -10%,var(--g1),transparent 60%),radial-gradient(800px 520px at 100% 0,var(--g2),transparent 55%),var(--bg);background-attachment:fixed;padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0);-webkit-font-smoothing:antialiased}
+body{font:600 15.5px/1.55 var(--f);color:var(--ink);background:radial-gradient(900px 520px at 6% -10%,var(--g1),transparent 60%),radial-gradient(820px 520px at 100% 0,var(--g2),transparent 55%),var(--bg);background-attachment:fixed;padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0);-webkit-font-smoothing:antialiased}
+.theming *,.theming *::before,.theming *::after{transition:background-color .35s ease,color .35s ease,border-color .35s ease,box-shadow .35s ease!important}
 button,input,textarea{font:inherit;color:inherit}
-button{cursor:pointer}
+button{cursor:pointer;-webkit-tap-highlight-color:transparent}
 :focus-visible{outline:2px solid var(--acc);outline-offset:2px}
-.i{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
-.app{display:grid;grid-template-columns:320px 1fr;gap:14px;height:100%;padding:14px}
-aside,main{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh);min-height:0;overflow:hidden}
+.i{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.app{display:grid;grid-template-columns:326px 1fr;gap:16px;height:100%;padding:16px}
+aside,main{background:var(--glass);backdrop-filter:blur(22px) saturate(1.3);-webkit-backdrop-filter:blur(22px) saturate(1.3);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh);min-height:0;overflow:hidden}
 aside{display:flex;flex-direction:column}
-.top{display:flex;align-items:center;gap:10px;padding:18px 16px 10px}
-.logo{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;color:#fff;background:linear-gradient(135deg,#3a5bd9,#14b8a6);box-shadow:0 6px 14px -4px rgba(58,91,217,.5)}
-.logo .i{width:20px;height:20px}
-.brand{flex:1;line-height:1.2}
-.brand b{display:block;font-family:Newsreader,Georgia,serif;font-size:22px;font-weight:600;letter-spacing:-.01em}
-.brand small{color:var(--mute);font-size:12px}
-.ib{display:grid;place-items:center;width:34px;height:34px;border:1px solid var(--line);background:var(--panel);border-radius:10px;color:var(--mute);transition:.15s}
+.top{display:flex;align-items:center;gap:10px;padding:20px 16px 10px}
+.logo{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;color:#fff;background:linear-gradient(135deg,#3a5bd9,#14b8a6);box-shadow:0 8px 18px -6px rgba(58,91,217,.6)}
+.logo .i{width:21px;height:21px}
+.brand{flex:1;line-height:1.15}
+.brand b{display:block;font-size:23px;font-weight:700;letter-spacing:-.01em}
+.brand small{color:var(--mute);font-size:12.5px;font-weight:600}
+.ib{display:grid;place-items:center;width:36px;height:36px;border:1px solid var(--line);background:var(--panel);border-radius:11px;color:var(--mute);transition:transform .18s var(--ease),color .18s,border-color .18s}
 .ib:hover{color:var(--ink);border-color:var(--mute)}
-.btn{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:var(--panel);border-radius:11px;padding:7px 13px;font-weight:500;font-size:14px;transition:.15s}
+.ib:active,.btn:active{transform:scale(.95)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:8px 14px;font-weight:700;font-size:14px;transition:transform .18s var(--ease),background-color .18s,border-color .18s,box-shadow .18s,filter .18s}
 .btn:hover{border-color:var(--mute);background:var(--soft)}
-.btn.pri{background:var(--acc);color:var(--acc-ink);border-color:var(--acc);box-shadow:0 6px 16px -6px var(--acc)}
-.btn.pri:hover{filter:brightness(1.07)}
+.btn.pri{background:linear-gradient(135deg,var(--acc),var(--acc2));color:var(--acc-ink);border-color:transparent;box-shadow:0 8px 18px -8px var(--acc)}
+.btn.pri:hover{filter:brightness(1.08);transform:translateY(-1px);box-shadow:0 12px 22px -8px var(--acc)}
+.btn.pri:active{transform:scale(.96)}
 .btn.dan{color:var(--danger)}
 .btn[disabled]{opacity:.55;pointer-events:none}
-.tabs{display:flex;gap:4px;margin:6px 16px;padding:4px;background:var(--soft);border-radius:13px}
-.tabs button{flex:1;border:0;background:transparent;padding:7px 4px;border-radius:10px;color:var(--mute);font-weight:500;font-size:14px;transition:.15s}
-.tabs button.on{background:var(--panel);color:var(--ink);box-shadow:0 1px 3px rgba(16,20,38,.14)}
+.tabs{position:relative;display:grid;grid-template-columns:1fr 1fr;margin:6px 16px;padding:4px;background:var(--soft);border-radius:14px}
+.tabs::before{content:"";position:absolute;top:4px;bottom:4px;left:4px;width:calc(50% - 4px);border-radius:11px;background:var(--panel);box-shadow:0 2px 8px rgba(15,19,38,.14);transition:transform .35s var(--ease)}
+.tabs.f::before{transform:translateX(100%)}
+.tabs button{position:relative;border:0;background:transparent;padding:8px 4px;border-radius:11px;color:var(--mute);font-weight:700;font-size:14px;transition:color .25s}
+.tabs button.on{color:var(--ink)}
 .sw{position:relative;margin:8px 16px 10px}
-.sw .i{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--mute)}
-.srch{width:100%;border:1px solid var(--line);background:var(--soft);border-radius:12px;padding:9px 12px 9px 36px;outline:none;transition:.15s}
-.srch:focus{border-color:var(--acc);background:var(--panel)}
-.list{flex:1;overflow:auto;padding:0 10px 10px}
-.item{position:relative;display:block;width:100%;text-align:left;border:0;background:transparent;border-radius:13px;padding:11px 14px;margin-bottom:3px;transition:.15s}
+.sw .i{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--mute)}
+.srch{width:100%;border:1px solid transparent;background:var(--soft);border-radius:13px;padding:10px 12px 10px 38px;outline:none;transition:border-color .2s,background-color .2s,box-shadow .2s}
+.srch:focus{border-color:var(--acc);background:var(--panel);box-shadow:0 0 0 4px var(--accsoft)}
+.list{flex:1;overflow:auto;padding:0 10px 10px;overscroll-behavior:contain}
+.item{position:relative;display:block;width:100%;text-align:left;border:0;background:transparent;border-radius:14px;padding:12px 16px;margin-bottom:3px;transition:background-color .2s,transform .18s var(--ease)}
 .item:hover{background:var(--soft)}
+.item:active{transform:scale(.985)}
 .item.on{background:var(--accsoft)}
-.item.on::before{content:"";position:absolute;left:4px;top:12px;bottom:12px;width:3px;border-radius:3px;background:var(--acc)}
-.item b{display:block;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.item span{display:block;color:var(--mute);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item::before{content:"";position:absolute;left:5px;top:14px;bottom:14px;width:3px;border-radius:3px;background:var(--acc);transform:scaleY(0);transition:transform .3s var(--ease)}
+.item.on::before{transform:scaleY(1)}
+.item b{display:block;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item span{display:block;color:var(--mute);font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .item small{color:var(--mute);font-size:12px}
-.empty{color:var(--mute);text-align:center;padding:36px 18px;font-size:14px}
+.empty{color:var(--mute);text-align:center;padding:40px 20px;font-size:14.5px}
 .side-foot{padding:12px 16px 16px;border-top:1px solid var(--line)}
-.side-foot .btn{width:100%;justify-content:center;padding:10px}
+.side-foot .btn{width:100%;padding:11px}
 main{display:flex;flex-direction:column}
-.bar{display:flex;align-items:center;gap:8px;padding:11px 18px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.bar{display:flex;align-items:center;gap:8px;padding:12px 18px;border-bottom:1px solid var(--line);flex-wrap:wrap}
 .bar .sp{flex:1}
 #menu{display:none;width:auto;padding:0 12px;gap:6px}
-.st{display:flex;align-items:center;gap:8px;color:var(--mute);font-size:13px}
-.dot{width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 3px rgba(34,197,94,.18)}
+.st{display:flex;align-items:center;gap:9px;color:var(--mute);font-size:13.5px}
+.dot{width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 3px rgba(34,197,94,.2)}
 .acts{display:flex;gap:6px;flex-wrap:wrap}
-.edit{flex:1;display:flex;flex-direction:column;width:100%;max-width:800px;margin:0 auto;padding:34px 28px 0;min-height:0}
-#title{border:0;background:transparent;font-family:Newsreader,Georgia,serif;font-size:38px;font-weight:600;letter-spacing:-.02em;line-height:1.2;padding:0;outline:none;width:100%}
-.meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;color:var(--mute);font-size:13px;margin:8px 0 6px;padding-bottom:14px;border-bottom:1px solid var(--line)}
-.chip{background:var(--accsoft);color:var(--acc);border-radius:20px;padding:1px 10px;font-size:12px;font-weight:500}
-#body{flex:1;border:0;background:transparent;resize:none;outline:none;font-size:16.5px;line-height:1.8;padding:16px 0 40px;width:100%}
-#prev{flex:1;overflow:auto;padding:14px 0 40px;font-size:16.5px;line-height:1.8}
-#prev h1,#prev h2,#prev h3,#prev h4{font-family:Newsreader,Georgia,serif;letter-spacing:-.01em;line-height:1.25;margin:1.3em 0 .4em}
+.edit{flex:1;display:flex;flex-direction:column;width:100%;max-width:800px;margin:0 auto;padding:36px 28px 0;min-height:0}
+.edit:not(.hide),.files:not(.hide){animation:viewIn .32s var(--ease)}
+.edit.swap{animation:viewIn .26s var(--ease)}
+#title{border:0;background:transparent;font-size:38px;font-weight:700;letter-spacing:-.02em;line-height:1.2;padding:0;outline:none;width:100%;caret-color:var(--acc)}
+.meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;color:var(--mute);font-size:13.5px;margin:8px 0 6px;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.chip{border:0;background:var(--accsoft);color:var(--acc);border-radius:20px;padding:2px 11px;font-size:12.5px;font-weight:700;transition:filter .2s}
+.chip:hover{filter:brightness(.95);text-decoration:underline}
+#body{flex:1;border:0;background:transparent;resize:none;outline:none;font-size:17px;font-weight:600;line-height:1.85;padding:16px 0 40px;width:100%;caret-color:var(--acc)}
+#prev{flex:1;overflow:auto;padding:14px 0 40px;font-size:17px;line-height:1.85}
+#prev h1,#prev h2,#prev h3,#prev h4{font-weight:700;letter-spacing:-.01em;line-height:1.25;margin:1.3em 0 .4em}
 #prev h1{font-size:30px}#prev h2{font-size:25px}#prev h3{font-size:20px}
 #prev p{margin:.6em 0}#prev code{background:var(--accsoft);padding:2px 6px;border-radius:6px;font-size:.9em}
 #prev pre{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:14px;overflow:auto}
 #prev blockquote{margin:.8em 0;padding:2px 16px;border-left:3px solid var(--acc);color:var(--mute)}
 #prev a{color:var(--acc)}#prev hr{border:0;border-top:1px solid var(--line)}
-::placeholder{color:var(--mute);opacity:.65}
-.files{flex:1;overflow:auto;padding:28px;max-width:800px;margin:0 auto;width:100%}
-.drop{border:2px dashed var(--line);border-radius:var(--r);padding:38px 20px;text-align:center;color:var(--mute);background:var(--soft);transition:.15s}
-.drop.over{border-color:var(--acc);background:var(--accsoft);color:var(--ink)}
-.drop strong{display:block;color:var(--ink);font-size:17px;margin-bottom:4px}
-.row{display:flex;align-items:center;gap:12px;padding:13px 6px;border-bottom:1px solid var(--line)}
-.row a{flex:1;color:var(--ink);text-decoration:none;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.row a:hover{color:var(--acc)}
-.row small{color:var(--mute)}
-.prog{height:4px;background:var(--line);border-radius:4px;margin-top:14px;overflow:hidden;display:none}
-.prog i{display:block;height:100%;width:0;background:var(--acc);transition:width .2s}
-.foot{padding:10px 18px;border-top:1px solid var(--line);text-align:center;color:var(--mute);font-size:12.5px}
-.foot b{color:var(--ink);font-weight:600}
-dialog{border:1px solid var(--line);border-radius:20px;background:var(--panel);color:var(--ink);padding:0;width:min(480px,92vw);box-shadow:0 30px 70px rgba(10,12,30,.35)}
-dialog::backdrop{background:rgba(8,10,20,.55);backdrop-filter:blur(4px)}
-dialog form{padding:24px}
-dialog h2{margin:0 0 4px;font-family:Newsreader,Georgia,serif;font-size:24px;letter-spacing:-.01em}
-dialog p{margin:0 0 16px;color:var(--mute);font-size:13.5px}
-label{display:block;font-size:13px;font-weight:500;margin:12px 0 4px}
-dialog input{width:100%;border:1px solid var(--line);background:var(--soft);border-radius:11px;padding:10px 12px;outline:none}
-dialog input:focus{border-color:var(--acc);background:var(--panel)}
+::placeholder{color:var(--mute);opacity:.6}
+.files{flex:1;overflow:auto;padding:28px;max-width:800px;margin:0 auto;width:100%;overscroll-behavior:contain}
+.drop{border:2px dashed var(--line);border-radius:var(--r);padding:40px 20px;margin-bottom:18px;text-align:center;color:var(--mute);background:var(--soft);transition:border-color .2s,background-color .2s,transform .25s var(--ease)}
+.drop.over{border-color:var(--acc);background:var(--accsoft);color:var(--ink);transform:scale(1.015)}
+.drop strong{display:block;color:var(--ink);font-size:18px;margin-bottom:4px}
+.row{display:flex;align-items:center;gap:14px;width:100%;text-align:left;border:1px solid var(--line);background:var(--panel);border-radius:15px;padding:12px 14px;margin-bottom:8px;transition:transform .2s var(--ease),border-color .2s,box-shadow .25s}
+.row:hover{transform:translateY(-2px);border-color:var(--acc);box-shadow:0 12px 24px -14px var(--acc)}
+.row:active{transform:scale(.99)}
+.ext{width:42px;height:42px;flex:none;border-radius:12px;display:grid;place-items:center;font-size:12px;font-weight:700;text-transform:uppercase;color:var(--acc);background:var(--accsoft)}
+.fn{flex:1;min-width:0;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row small{color:var(--mute);font-weight:600}
+.row .chev{color:var(--mute)}
+.sk{height:68px;border-radius:15px;margin-bottom:8px;background:linear-gradient(90deg,var(--soft),var(--line),var(--soft));background-size:200% 100%;animation:sh 1.3s linear infinite}
+.prog{height:5px;background:var(--line);border-radius:5px;margin-top:16px;overflow:hidden;display:none}
+.prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--acc),var(--acc2));border-radius:5px;transition:width .3s var(--ease)}
+.foot{padding:11px 18px;border-top:1px solid var(--line);text-align:center;color:var(--mute);font-size:13px}
+.foot b{color:var(--ink);font-weight:700}
+dialog{border:1px solid var(--line);border-radius:22px;background:var(--panel);color:var(--ink);padding:0;width:min(500px,92vw);box-shadow:0 40px 80px rgba(8,10,25,.4)}
+dialog[open]{animation:pop .28s var(--ease)}
+dialog::backdrop{background:rgba(8,10,20,.55);backdrop-filter:blur(5px)}
+dialog[open]::backdrop{animation:fadeIn .28s ease}
+dialog form,.dform{padding:26px}
+dialog h2{margin:0 0 4px;font-size:24px;font-weight:700;letter-spacing:-.01em;word-break:break-word}
+dialog p{margin:0 0 16px;color:var(--mute);font-size:14px}
+dialog p.hint{font-size:13px;margin:14px 0 0}
+label{display:block;font-size:13.5px;font-weight:700;margin:14px 0 5px}
+dialog input{width:100%;border:1px solid transparent;background:var(--soft);border-radius:12px;padding:11px 13px;outline:none;transition:border-color .2s,background-color .2s,box-shadow .2s}
+dialog input:focus{border-color:var(--acc);background:var(--panel);box-shadow:0 0 0 4px var(--accsoft)}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.dacts{display:flex;gap:8px;justify-content:flex-end;margin-top:22px}
-#toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);background:var(--ink);color:var(--panel);padding:11px 18px;border-radius:13px;font-size:14px;opacity:0;pointer-events:none;transition:.25s;z-index:9;max-width:90vw;box-shadow:var(--sh)}
-#toast.show{opacity:1;transform:translate(-50%,0)}
+.cp{display:flex;gap:8px}.cp input{flex:1;min-width:0}
+.dacts{display:flex;gap:8px;justify-content:flex-end;align-items:center;margin-top:22px;flex-wrap:wrap}
+.dacts .acts{margin-right:auto}
+#toast{position:fixed;left:50%;bottom:calc(26px + env(safe-area-inset-bottom,0px));transform:translate(-50%,24px) scale(.96);background:var(--ink);color:var(--panel);padding:12px 20px;border-radius:14px;font-size:14.5px;font-weight:700;opacity:0;pointer-events:none;transition:opacity .3s,transform .4s var(--ease);z-index:99;max-width:90vw;box-shadow:var(--sh)}
+#toast.show{opacity:1;transform:translate(-50%,0) scale(1)}
 .hide{display:none!important}
+#scrim{display:none}
+@keyframes pop{from{opacity:0;transform:translateY(14px) scale(.96)}to{opacity:1;transform:none}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes viewIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes sh{to{background-position:-200% 0}}
 @media(max-width:760px){
 body{background-attachment:scroll}
 .app{grid-template-columns:1fr;padding:0;gap:0}
 aside,main{border-radius:0;border-width:0;box-shadow:none}
-aside{position:fixed;inset:0 auto 0 0;z-index:5;transform:translateX(-100%);transition:transform .25s;width:min(340px,88vw);box-shadow:8px 0 30px rgba(0,0,0,.3)}
+aside{position:fixed;inset:0 auto 0 0;z-index:5;transform:translateX(-102%);transition:transform .38s var(--ease);width:min(340px,88vw);background:var(--panel);box-shadow:10px 0 40px rgba(0,0,0,.3)}
 aside.open{transform:none}
+#scrim{display:block;position:fixed;inset:0;background:rgba(8,10,20,.5);opacity:0;pointer-events:none;transition:opacity .3s;z-index:4}
+aside.open~#scrim{opacity:1;pointer-events:auto}
 #menu{display:inline-flex}
-.edit{padding:20px 18px 0}#title{font-size:28px}.bar{padding:10px 12px}.files{padding:18px}
-.btn .l{display:none}.btn{padding:8px 10px}
+.edit{padding:22px 18px 0}#title{font-size:28px}.bar{padding:10px 12px}.files{padding:18px}
+.btn .l{display:none}.btn{padding:9px 11px}.cp .btn{padding:9px 12px}
 }
-@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
@@ -133,6 +159,7 @@ aside.open{transform:none}
   </div>
   <div id="pF" class="hide" style="padding:12px 18px;color:var(--mute);font-size:13.5px">Danh sách tệp nằm ở khung bên phải.</div>
 </aside>
+<div id="scrim"></div>
 
 <main>
   <div class="bar">
@@ -142,6 +169,7 @@ aside.open{transform:none}
     <div class="acts" id="noteActs">
       <button class="btn" id="mdBtn" title="Xem Markdown"><svg class="i" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><span class="l">Xem Markdown</span></button>
       <button class="btn" id="pull" title="Kéo từ GitHub"><svg class="i" viewBox="0 0 24 24"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 20h16"/></svg><span class="l">Kéo từ GitHub</span></button>
+      <button class="btn" id="share" title="Chia sẻ link jsDelivr"><svg class="i" viewBox="0 0 24 24"><path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1"/></svg><span class="l">Chia sẻ</span></button>
       <button class="btn" id="copy" title="Sao chép"><svg class="i" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 012-2h9"/></svg><span class="l">Sao chép</span></button>
       <button class="btn" id="dl" title="Tải .txt"><svg class="i" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8z"/><path d="M14 3v5h5"/></svg><span class="l">Tải .txt</span></button>
       <button class="btn pri" id="push" title="Lưu lên GitHub"><svg class="i" viewBox="0 0 24 24"><path d="M12 16V4m0 0L8 8m4-4l4 4M4 20h16"/></svg><span class="l">Lưu lên GitHub</span></button>
@@ -194,6 +222,14 @@ aside.open{transform:none}
   <input id="pwIn" type="password" autocomplete="current-password" placeholder="Mật khẩu">
   <div class="dacts" style="flex-direction:row-reverse;justify-content:flex-start"><button class="btn pri" value="ok">Mở khóa</button><button class="btn" value="cancel">Hủy</button></div>
 </form></dialog>
+<dialog id="shDlg"><div class="dform">
+  <h2 id="shT"></h2><p id="shSub"></p>
+  <label>Link jsDelivr theo nhánh</label>
+  <div class="cp"><input id="shL" readonly><button class="btn pri" data-copy="shL">Sao chép</button></div>
+  <div id="shPinW"><label>Link cố định theo phiên bản</label><div class="cp"><input id="shP" readonly><button class="btn" data-copy="shP">Sao chép</button></div></div>
+  <p class="hint">jsDelivr chỉ hoạt động với repo công khai. Link theo nhánh có thể mất tới 12 giờ mới hiện nội dung mới; link cố định luôn trả đúng phiên bản vừa lưu.</p>
+  <div class="dacts"><span id="shFile" class="acts"><button class="btn" id="shDown">Tải về</button><button class="btn dan" id="shDel">Xóa</button></span><button class="btn" id="shOpen">Mở link</button><button class="btn" id="shClose">Đóng</button></div>
+</div></dialog>
 <div id="toast" role="status"></div>
 
 <script>
@@ -211,7 +247,7 @@ const save=()=>store.set('so.notes',notes);
 /* Theme */
 const root=document.documentElement;
 const savedTheme=store.get('so.theme'); if(savedTheme) root.dataset.theme=savedTheme;
-$('#theme').onclick=()=>{const dark=root.dataset.theme?root.dataset.theme==='dark':matchMedia('(prefers-color-scheme:dark)').matches;root.dataset.theme=dark?'light':'dark';store.set('so.theme',root.dataset.theme)};
+$('#theme').onclick=()=>{root.classList.add('theming');setTimeout(()=>root.classList.remove('theming'),400);const dark=root.dataset.theme?root.dataset.theme==='dark':matchMedia('(prefers-color-scheme:dark)').matches;root.dataset.theme=dark?'light':'dark';store.set('so.theme',root.dataset.theme)};
 
 /* Notes */
 function renderList(){
@@ -221,20 +257,23 @@ function renderList(){
 }
 function open(id){
   const n=notes.find(x=>x.id===id); if(!n)return; curId=id;
-  $('#title').value=n.title; $('#body').value=n.body; stat(); renderPrev(); renderList(); $('#side').classList.remove('open');
+  $('#title').value=n.title; $('#body').value=n.body; stat(); renderPrev(); markOn(); $('#side').classList.remove('open');
+  const v=$('#vN'); v.classList.remove('swap'); void v.offsetWidth; v.classList.add('swap');
 }
 function create(){
   const n={id:Date.now().toString(36),title:'',body:'',updated:Date.now()};
-  notes.push(n); save(); open(n.id); setTab('N'); $('#title').focus();
+  notes.push(n); save(); renderList(); open(n.id); setTab('N'); $('#title').focus();
 }
+const markOn=()=>document.querySelectorAll('.item').forEach(e=>e.classList.toggle('on',e.dataset.id===curId));
 function stat(){
   const b=$('#body').value, w=b.trim()?b.trim().split(/\s+/).length:0;
   $('#stat').textContent=`${w} từ, ${b.length} ký tự`;
-  const n=cur(); $('#meta').innerHTML=n?`Cập nhật ${fmt(n.updated)}${n.gh?` <span class="chip">${esc(n.gh)}</span>`:''}`:'';
+  const n=cur(); $('#meta').innerHTML=n?`Cập nhật ${fmt(n.updated)}${n.gh?` <button class="chip" data-share title="Lấy link chia sẻ">${esc(n.gh)}</button>`:''}`:'';
 }
 function edit(){
   const n=notes.find(x=>x.id===curId); if(!n)return;
-  n.title=$('#title').value; n.body=$('#body').value; n.updated=Date.now(); save(); stat(); renderList(); renderPrev(); $('#saved').textContent='Đã lưu '+new Date().toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'});
+  n.title=$('#title').value; n.body=$('#body').value; n.updated=Date.now(); stat(); renderPrev(); $('#saved').textContent='Đang lưu…';
+  clearTimeout(edit.t); edit.t=setTimeout(()=>{save();renderList();$('#saved').textContent='Đã lưu '+new Date().toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'})},300);
 }
 $('#title').oninput=$('#body').oninput=edit;
 $('#q').oninput=renderList;
@@ -242,7 +281,7 @@ $('#list').onclick=e=>{const b=e.target.closest('.item');if(b)open(b.dataset.id)
 $('#newBtn').onclick=create;
 $('#del').onclick=()=>{
   if(!curId||!confirm('Xóa ghi chú này khỏi trình duyệt? (Bản đã đẩy lên GitHub vẫn được giữ lại)'))return;
-  notes=notes.filter(n=>n.id!==curId); save(); curId=null;
+  notes=notes.filter(n=>n.id!==curId); save(); curId=null; renderList();
   notes.length?open([...notes].sort((a,b)=>b.updated-a.updated)[0].id):create();
 };
 const cur=()=>notes.find(n=>n.id===curId);
@@ -262,7 +301,7 @@ async function put(path,b64,msg){
   if(ex.ok){const j=await ex.json();sha=j.sha}
   const r=await api(path,{method:'PUT',body:JSON.stringify({message:msg,content:b64,branch:cfg.branch,...(sha?{sha}:{})})});
   if(!r.ok)throw new Error(await errMsg(r));
-  return (await r.json()).content;
+  return await r.json();
 }
 async function remove(path,msg){const ex=await api(path,{q:'?ref='+encodeURIComponent(cfg.branch)});if(!ex.ok)return;const {sha}=await ex.json();await api(path,{method:'DELETE',body:JSON.stringify({message:msg,sha,branch:cfg.branch})})}
 const utf8b64=s=>{const bytes=new TextEncoder().encode(s);let bin='';for(let i=0;i<bytes.length;i+=0x8000)bin+=String.fromCharCode.apply(null,bytes.subarray(i,i+0x8000));return btoa(bin)};
@@ -274,8 +313,8 @@ $('#push').onclick=async()=>{
   try{
     const ext=n.gh&&/\.md$/i.test(n.gh)?'.md':'.txt';
     const path=`${cfg.notesDir||'notes'}/${fileName(n.title)}${ext}`;
-    await put(path,utf8b64(n.body),`Cập nhật ghi chú: ${n.title||'Chưa đặt tiêu đề'}`);
-    if(n.gh&&n.gh!==path)await remove(n.gh,'Đổi tên ghi chú'); n.gh=path; save(); renderList(); toast('Đã lưu lên GitHub: '+path);
+    const res=await put(path,utf8b64(n.body),`Cập nhật ghi chú: ${n.title||'Chưa đặt tiêu đề'}`);
+    n.commit=res.commit&&res.commit.sha; if(n.gh&&n.gh!==path)await remove(n.gh,'Đổi tên ghi chú'); n.gh=path; save(); renderList(); toast('Đã lưu lên GitHub: '+path);
   }catch(e){toast('Không lưu được: '+e.message)}
   btn.disabled=false; $('#push .l').textContent='Lưu lên GitHub';
 };
@@ -295,22 +334,62 @@ async function upload(files){
   if(!fail)toast(`Đã tải lên ${files.length} tệp`);
   loadFiles();
 }
+const fileMap={};
+const enc=p=>p.split('/').map(encodeURIComponent).join('/');
+const cdn=(path,ref)=>`https://cdn.jsdelivr.net/gh/${cfg.owner}/${cfg.repo}@${encodeURIComponent(ref||cfg.branch)}/${enc(path)}`;
+const sz=n=>n>1048576?(n/1048576).toFixed(1)+' MB':Math.max(1,Math.round(n/1024))+' KB';
 async function loadFiles(){
-  const box=$('#fl'); if(!await ready()){box.innerHTML='<div class="empty">Chưa kết nối GitHub.</div>';return}
-  box.innerHTML='<div class="empty">Đang tải danh sách…</div>';
+  const box=$('#fl'); if(!await ready()){box.innerHTML='<div class="empty">Chưa kết nối GitHub. Bấm biểu tượng chìa khóa để nhập thông tin.</div>';return}
+  box.innerHTML='<div class="sk"></div><div class="sk"></div><div class="sk"></div>';
   try{
     const r=await api(cfg.filesDir||'files',{q:'?ref='+encodeURIComponent(cfg.branch)});
     if(r.status===404){box.innerHTML='<div class="empty">Thư mục chưa có tệp nào. Hãy tải tệp đầu tiên lên.</div>';return}
     if(!r.ok)throw new Error(await errMsg(r));
     const arr=(await r.json()).filter(x=>x.type==='file');
-    box.innerHTML=arr.length?arr.map(f=>`<div class="row"><a href="${esc(f.html_url)}" target="_blank" rel="noopener">${esc(f.name)}</a><small>${f.size>1048576?(f.size/1048576).toFixed(1)+' MB':Math.max(1,Math.round(f.size/1024))+' KB'}</small><button class="btn dan" data-p="${esc(f.path)}" data-s="${f.sha}">Xóa</button></div>`).join(''):'<div class="empty">Thư mục chưa có tệp nào.</div>';
+    Object.keys(fileMap).forEach(k=>delete fileMap[k]); arr.forEach(f=>fileMap[f.path]=f);
+    box.innerHTML=arr.length?arr.map(f=>`<button class="row" data-p="${esc(f.path)}"><span class="ext">${esc((f.name.split('.').pop()||'').slice(0,4))}</span><span class="fn">${esc(f.name)}</span><small>${sz(f.size)}</small><svg class="i chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>`).join(''):'<div class="empty">Thư mục chưa có tệp nào.</div>';
   }catch(e){box.innerHTML=`<div class="empty">Không tải được danh sách: ${esc(e.message)}</div>`}
 }
-$('#fl').onclick=async e=>{
-  const b=e.target.closest('button[data-p]'); if(!b||!confirm('Xóa tệp này khỏi GitHub?'))return;
-  const r=await api(b.dataset.p,{method:'DELETE',body:JSON.stringify({message:'Xóa '+b.dataset.p,sha:b.dataset.s,branch:cfg.branch})});
-  r.ok?(toast('Đã xóa tệp'),loadFiles()):toast('Không xóa được: '+await errMsg(r));
+$('#fl').onclick=e=>{const b=e.target.closest('.row');const f=b&&fileMap[b.dataset.p];if(f)showShare({name:f.name,path:f.path,size:f.size,file:f})};
+
+/* Chia sẻ qua jsDelivr */
+let shCur=null;
+function showShare(o){
+  shCur=o; $('#shT').textContent=o.name;
+  $('#shSub').textContent=o.file?sz(o.size)+' trong kho GitHub':'Ghi chú đã lưu trên GitHub';
+  $('#shL').value=cdn(o.path);
+  $('#shPinW').classList.toggle('hide',!o.commit); if(o.commit)$('#shP').value=cdn(o.path,o.commit);
+  $('#shFile').classList.toggle('hide',!o.file); $('#shDlg').showModal();
+}
+async function copyText(t,btn){
+  try{await navigator.clipboard.writeText(t)}catch{const i=document.createElement('textarea');i.value=t;document.body.appendChild(i);i.select();document.execCommand('copy');i.remove()}
+  if(btn){const o=btn.textContent;btn.textContent='Đã chép';setTimeout(()=>btn.textContent=o,1400)}else toast('Đã sao chép')
+}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-copy]');if(b)copyText($('#'+b.dataset.copy).value,b)});
+$('#share').onclick=()=>{
+  const n=cur(); if(!n)return;
+  if(!cfg.owner||!cfg.repo){toast('Hãy nhập thông tin GitHub trước');$('#dlg').showModal();return}
+  if(!n.gh){toast('Hãy bấm “Lưu lên GitHub” trước để có link chia sẻ');return}
+  showShare({name:n.title||'Chưa đặt tiêu đề',path:n.gh,commit:n.commit});
 };
+$('#meta').onclick=e=>{if(e.target.closest('[data-share]'))$('#share').click()};
+$('#shOpen').onclick=()=>window.open($('#shL').value,'_blank','noopener');
+$('#shClose').onclick=()=>$('#shDlg').close();
+$('#shDown').onclick=async()=>{
+  const f=shCur.file; if(!await ready())return;
+  try{
+    const r=await fetch(f.url,{headers:{Authorization:'Bearer '+cfg.token,Accept:'application/vnd.github.raw+json'}});
+    if(!r.ok)throw new Error(await errMsg(r));
+    const a=document.createElement('a');a.href=URL.createObjectURL(await r.blob());a.download=f.name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  }catch(e){toast('Không tải được: '+e.message)}
+};
+$('#shDel').onclick=async()=>{
+  const f=shCur.file; if(!confirm('Xóa tệp này khỏi GitHub?')||!await ready())return;
+  const r=await api(f.path,{method:'DELETE',body:JSON.stringify({message:'Xóa '+f.path,sha:f.sha,branch:cfg.branch})});
+  if(r.ok){$('#shDlg').close();toast('Đã xóa tệp');loadFiles()}else toast('Không xóa được: '+await errMsg(r));
+};
+document.querySelectorAll('dialog').forEach(d=>d.addEventListener('click',e=>{if(e.target===d)d.close()}));
+addEventListener('pagehide',save);
 $('#pick').onclick=()=>$('#file').click();
 $('#file').onchange=e=>{upload([...e.target.files]);e.target.value=''};
 $('#refresh').onclick=loadFiles;
@@ -376,7 +455,7 @@ $('#pull').onclick=async()=>{
 
 /* Tabs */
 function setTab(t){
-  tab=t; const n=t==='N';
+  tab=t; const n=t==='N'; $('.tabs').classList.toggle('f',!n);
   $('#tN').classList.toggle('on',n); $('#tF').classList.toggle('on',!n);
   $('#pN').classList.toggle('hide',!n); $('#pF').classList.toggle('hide',n);
   $('#vN').classList.toggle('hide',!n); $('#vF').classList.toggle('hide',n);
@@ -408,6 +487,7 @@ document.addEventListener('keydown',e=>{
 });
 
 /* Init */
+renderList();
 notes.length?open([...notes].sort((a,b)=>b.updated-a.updated)[0].id):create();
 </script>
 </body>
