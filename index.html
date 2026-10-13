@@ -77,13 +77,6 @@ main{display:flex;flex-direction:column}
 .chip{border:0;background:var(--accsoft);color:var(--acc);border-radius:20px;padding:2px 11px;font-size:12.5px;font-weight:700;transition:filter .2s}
 .chip:hover{filter:brightness(.95);text-decoration:underline}
 #body{flex:1;border:0;background:transparent;resize:none;outline:none;font-size:17px;font-weight:600;line-height:1.85;padding:16px 0 40px;width:100%;caret-color:var(--acc)}
-#prev{flex:1;overflow:auto;padding:14px 0 40px;font-size:17px;line-height:1.85}
-#prev h1,#prev h2,#prev h3,#prev h4{font-weight:700;letter-spacing:-.01em;line-height:1.25;margin:1.3em 0 .4em}
-#prev h1{font-size:30px}#prev h2{font-size:25px}#prev h3{font-size:20px}
-#prev p{margin:.6em 0}#prev code{background:var(--accsoft);padding:2px 6px;border-radius:6px;font-size:.9em}
-#prev pre{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:14px;overflow:auto}
-#prev blockquote{margin:.8em 0;padding:2px 16px;border-left:3px solid var(--acc);color:var(--mute)}
-#prev a{color:var(--acc)}#prev hr{border:0;border-top:1px solid var(--line)}
 ::placeholder{color:var(--mute);opacity:.6}
 .files{flex:1;overflow:auto;padding:28px;max-width:800px;margin:0 auto;width:100%;overscroll-behavior:contain}
 .drop{border:2px dashed var(--line);border-radius:var(--r);padding:40px 20px;margin-bottom:18px;text-align:center;color:var(--mute);background:var(--soft);transition:border-color .2s,background-color .2s,transform .25s var(--ease)}
@@ -167,7 +160,6 @@ aside.open~#scrim{opacity:1;pointer-events:auto}
     <div class="st" id="stWrap"><span class="dot"></span><span id="saved">Sẵn sàng</span><span id="stat"></span></div>
     <span class="sp"></span>
     <div class="acts" id="noteActs">
-      <button class="btn" id="mdBtn" title="Xem Markdown"><svg class="i" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><span class="l">Xem Markdown</span></button>
       <button class="btn" id="pull" title="Kéo từ GitHub"><svg class="i" viewBox="0 0 24 24"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 20h16"/></svg><span class="l">Kéo từ GitHub</span></button>
       <button class="btn" id="share" title="Chia sẻ link jsDelivr"><svg class="i" viewBox="0 0 24 24"><path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1"/></svg><span class="l">Chia sẻ</span></button>
       <button class="btn" id="copy" title="Sao chép"><svg class="i" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 012-2h9"/></svg><span class="l">Sao chép</span></button>
@@ -185,7 +177,6 @@ aside.open~#scrim{opacity:1;pointer-events:auto}
     <input id="title" placeholder="Tiêu đề" autocomplete="off">
     <div class="meta" id="meta"></div>
     <textarea id="body" placeholder="Viết gì đó… mọi thay đổi được tự động lưu trên trình duyệt." spellcheck="false"></textarea>
-    <div id="prev" class="hide"></div>
   </section>
 
   <section class="files hide" id="vF">
@@ -257,7 +248,7 @@ function renderList(){
 }
 function open(id){
   const n=notes.find(x=>x.id===id); if(!n)return; curId=id;
-  $('#title').value=n.title; $('#body').value=n.body; stat(); renderPrev(); markOn(); $('#side').classList.remove('open');
+  $('#title').value=n.title; $('#body').value=n.body; stat(); markOn(); $('#side').classList.remove('open');
   const v=$('#vN'); v.classList.remove('swap'); void v.offsetWidth; v.classList.add('swap');
 }
 function create(){
@@ -272,7 +263,7 @@ function stat(){
 }
 function edit(){
   const n=notes.find(x=>x.id===curId); if(!n)return;
-  n.title=$('#title').value; n.body=$('#body').value; n.updated=Date.now(); stat(); renderPrev(); $('#saved').textContent='Đang lưu…';
+  n.title=$('#title').value; n.body=$('#body').value; n.updated=Date.now(); stat(); $('#saved').textContent='Đang lưu…';
   clearTimeout(edit.t); edit.t=setTimeout(()=>{save();renderList();$('#saved').textContent='Đã lưu '+new Date().toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'})},300);
 }
 $('#title').oninput=$('#body').oninput=edit;
@@ -294,16 +285,18 @@ const ready=async()=>{
   if(!cfg.token&&cfg.vault){const pw=await askPw();if(!pw)return false;try{cfg.token=await unseal(cfg.vault,pw)}catch{toast('Sai mật khẩu');return false}}
   return true};
 const persist=()=>{const c={...cfg};if(c.vault)delete c.token;store.set('so.cfg',c)};
-const api=(path,o={})=>fetch(`https://api.github.com/repos/${encodeURIComponent(cfg.owner)}/${encodeURIComponent(cfg.repo)}/contents/${path.split('/').filter(Boolean).map(encodeURIComponent).join('/')}${o.q||''}`,{method:o.method||'GET',body:o.body,headers:{Authorization:'Bearer '+cfg.token,Accept:'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'}});
+const safeFetch=(u,o)=>fetch(u,o).catch(()=>{throw new Error('Không kết nối được tới api.github.com. Kiểm tra mạng, hoặc trang đang chạy trong môi trường chặn kết nối ngoài.')});
+const jf=async r=>{const t=await r.text();try{return JSON.parse(t)}catch{throw new Error('Phản hồi không phải JSON (HTTP '+r.status+'): '+t.slice(0,90).replace(/\s+/g,' '))}};
+const api=(path,o={})=>safeFetch(`https://api.github.com/repos/${encodeURIComponent(cfg.owner)}/${encodeURIComponent(cfg.repo)}/contents/${path.split('/').filter(Boolean).map(encodeURIComponent).join('/')}${o.q||''}`,{method:o.method||'GET',body:o.body,headers:{Authorization:'Bearer '+cfg.token,Accept:'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'}});
 const errMsg=async r=>{try{return (await r.json()).message}catch{return 'Lỗi '+r.status}};
 async function put(path,b64,msg){
   let sha; const ex=await api(path,{q:'?ref='+encodeURIComponent(cfg.branch)});
-  if(ex.ok){const j=await ex.json();sha=j.sha}
+  if(ex.ok){const j=await jf(ex);sha=j.sha}
   const r=await api(path,{method:'PUT',body:JSON.stringify({message:msg,content:b64,branch:cfg.branch,...(sha?{sha}:{})})});
   if(!r.ok)throw new Error(await errMsg(r));
-  return await r.json();
+  return await jf(r);
 }
-async function remove(path,msg){const ex=await api(path,{q:'?ref='+encodeURIComponent(cfg.branch)});if(!ex.ok)return;const {sha}=await ex.json();await api(path,{method:'DELETE',body:JSON.stringify({message:msg,sha,branch:cfg.branch})})}
+async function remove(path,msg){const ex=await api(path,{q:'?ref='+encodeURIComponent(cfg.branch)});if(!ex.ok)return;const {sha}=await jf(ex);await api(path,{method:'DELETE',body:JSON.stringify({message:msg,sha,branch:cfg.branch})})}
 const utf8b64=s=>{const bytes=new TextEncoder().encode(s);let bin='';for(let i=0;i<bytes.length;i+=0x8000)bin+=String.fromCharCode.apply(null,bytes.subarray(i,i+0x8000));return btoa(bin)};
 const fileb64=f=>new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result.split(',')[1]);r.onerror=()=>rej(new Error('Không đọc được tệp'));r.readAsDataURL(f)});
 
@@ -345,7 +338,7 @@ async function loadFiles(){
     const r=await api(cfg.filesDir||'files',{q:'?ref='+encodeURIComponent(cfg.branch)});
     if(r.status===404){box.innerHTML='<div class="empty">Thư mục chưa có tệp nào. Hãy tải tệp đầu tiên lên.</div>';return}
     if(!r.ok)throw new Error(await errMsg(r));
-    const arr=(await r.json()).filter(x=>x.type==='file');
+    const arr=(await jf(r)).filter(x=>x.type==='file');
     Object.keys(fileMap).forEach(k=>delete fileMap[k]); arr.forEach(f=>fileMap[f.path]=f);
     box.innerHTML=arr.length?arr.map(f=>`<button class="row" data-p="${esc(f.path)}"><span class="ext">${esc((f.name.split('.').pop()||'').slice(0,4))}</span><span class="fn">${esc(f.name)}</span><small>${sz(f.size)}</small><svg class="i chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>`).join(''):'<div class="empty">Thư mục chưa có tệp nào.</div>';
   }catch(e){box.innerHTML=`<div class="empty">Không tải được danh sách: ${esc(e.message)}</div>`}
@@ -398,32 +391,6 @@ const drop=$('#drop');
 ['dragleave','drop'].forEach(t=>drop.addEventListener(t,e=>{e.preventDefault();drop.classList.remove('over')}));
 drop.addEventListener('drop',e=>upload([...e.dataTransfer.files]));
 
-/* Markdown */
-let mdOn=false;
-function md(src){
-  const out=[];let list=null,code=false;
-  const inl=t=>esc(t).replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>').replace(/\*([^*]+)\*/g,'<i>$1</i>').replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');
-  const close=()=>{if(list){out.push(`</${list}>`);list=null}};
-  for(const l of src.split('\n')){
-    if(l.startsWith('```')){close();out.push(code?'</pre>':'<pre>');code=!code;continue}
-    if(code){out.push(esc(l)+'\n');continue}
-    let m;
-    if(m=l.match(/^(#{1,4})\s+(.*)/)){close();out.push(`<h${m[1].length}>${inl(m[2])}</h${m[1].length}>`)}
-    else if(m=l.match(/^\s*[-*]\s+(.*)/)){if(list!=='ul'){close();out.push('<ul>');list='ul'}out.push(`<li>${inl(m[1])}</li>`)}
-    else if(m=l.match(/^\s*\d+\.\s+(.*)/)){if(list!=='ol'){close();out.push('<ol>');list='ol'}out.push(`<li>${inl(m[1])}</li>`)}
-    else if(m=l.match(/^>\s?(.*)/)){close();out.push(`<blockquote>${inl(m[1])}</blockquote>`)}
-    else if(/^---+$/.test(l)){close();out.push('<hr>')}
-    else if(!l.trim()){close()}
-    else{close();out.push(`<p>${inl(l)}</p>`)}
-  }
-  close();if(code)out.push('</pre>');return out.join('');
-}
-function renderPrev(){if(mdOn)$('#prev').innerHTML=md($('#body').value)}
-$('#mdBtn').onclick=()=>{
-  mdOn=!mdOn; $('#prev').classList.toggle('hide',!mdOn); $('#body').classList.toggle('hide',mdOn);
-  $('#mdBtn .l').textContent=mdOn?'Quay lại soạn thảo':'Xem Markdown'; renderPrev();
-};
-
 /* Mã hóa token (AES-GCM + PBKDF2, chạy hoàn toàn trong trình duyệt) */
 const b64e=u=>btoa(String.fromCharCode(...u)),b64d=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
 async function deriveKey(pw,salt){const k=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:310000,hash:'SHA-256'},k,{name:'AES-GCM',length:256},false,['encrypt','decrypt'])}
@@ -438,7 +405,7 @@ $('#pull').onclick=async()=>{
     const r=await api(cfg.notesDir||'notes',{q:'?ref='+encodeURIComponent(cfg.branch)});
     if(r.status===404){toast('Chưa có thư mục ghi chú trên GitHub');return}
     if(!r.ok)throw new Error(await errMsg(r));
-    const files=(await r.json()).filter(f=>f.type==='file'&&/\.(txt|md)$/i.test(f.name));
+    const files=(await jf(r)).filter(f=>f.type==='file'&&/\.(txt|md)$/i.test(f.name));
     let add=0,upd=0,skip=0;
     for(const f of files){
       const rr=await fetch(f.url,{headers:{Authorization:'Bearer '+cfg.token,Accept:'application/vnd.github.raw+json'}});
@@ -475,7 +442,11 @@ $('#cfgBtn').onclick=()=>{
 };
 $('#saveCfg').onclick=async()=>{
   const tok=$('#cT').value.trim(),pw=$('#cP').value;
-  const next={owner:$('#cO').value.trim(),repo:$('#cR').value.trim(),branch:$('#cB').value.trim()||'main',notesDir:$('#cN').value.trim()||'notes',filesDir:$('#cF').value.trim()||'files',vault:cfg.vault,token:tok||cfg.token};
+  let o=$('#cO').value.trim(),rp=$('#cR').value.trim();
+  const m=(rp||o).match(/github\.com\/([^\/\s]+)\/([^\/\s#?]+)/i); if(m){o=m[1];rp=m[2]}
+  if(o.includes('/')&&!rp)[o,rp]=o.split('/');
+  rp=rp.replace(/\.git$/i,'').replace(/\s+/g,'');o=o.replace(/\s+/g,'');
+  const next={owner:o,repo:rp,branch:$('#cB').value.trim()||'main',notesDir:$('#cN').value.trim()||'notes',filesDir:$('#cF').value.trim()||'files',vault:cfg.vault,token:tok||cfg.token};
   if(tok&&pw)next.vault=await seal(tok,pw); else if(tok)delete next.vault;
   cfg=next; persist();
   toast(cfg.vault?'Đã lưu, token được mã hóa':'Đã lưu (token chưa mã hóa)'); if(tab==='F')setTimeout(loadFiles,50);
