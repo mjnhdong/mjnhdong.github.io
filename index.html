@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Sổ tay - Ghi chú và kho tệp GitHub</title>
 <meta name="author" content="Đặng Minh Đông">
-<meta name="version" content="1.6">
+<meta name="version" content="1.7">
 <meta name="copyright" content="© 2026 Đặng Minh Đông">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -365,11 +365,15 @@ async function getSha(path){
   if(r.status===404)return null; if(!r.ok)throw new Error(await errMsg(r));
   return (await jf(r)).sha;
 }
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 async function put(path,b64,msg){
-  const sha=await getSha(path);
-  const r=await api(path,{method:'PUT',body:JSON.stringify({message:msg,content:b64,branch:cfg.branch,...(sha?{sha}:{})})});
-  if(!r.ok)throw new Error(await errMsg(r));
-  return await jf(r);
+  for(let t=0;;t++){
+    const sha=await getSha(path);
+    const r=await api(path,{method:'PUT',body:JSON.stringify({message:msg,content:b64,branch:cfg.branch,...(sha?{sha}:{})})});
+    if(r.ok)return await jf(r);
+    if((r.status===409||r.status===422)&&t<3){await sleep(700*(t+1));continue}
+    throw new Error(await errMsg(r));
+  }
 }
 async function remove(path,msg){
   const sha=await getSha(path); if(!sha)return;
@@ -379,10 +383,15 @@ async function remove(path,msg){
 const manPath=()=>`${cfg.notesDir||'notes'}/.titles.json`;
 async function readMan(){
   const r=await api(manPath(),{q:'?ref='+encodeURIComponent(cfg.branch)+'&_='+Date.now()});
-  if(!r.ok)return {};
+  if(r.status===404)return {}; if(!r.ok)throw new Error(await errMsg(r));
   try{const j=await jf(r);return JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(j.content.replace(/\s/g,'')),c=>c.charCodeAt(0))))||{}}catch{return {}}
 }
-async function writeMan(fn,msg){const d=await readMan();fn(d);await put(manPath(),utf8b64(JSON.stringify(d,null,1)),msg)}
+async function writeMan(fn,msg){
+  for(let t=0;;t++){
+    try{const d=await readMan();fn(d);await put(manPath(),utf8b64(JSON.stringify(d,null,1)),msg);return}
+    catch(e){if(t>=3)throw e;await sleep(700*(t+1))}
+  }
+}
 const utf8b64=s=>{const bytes=new TextEncoder().encode(s);let bin='';for(let i=0;i<bytes.length;i+=0x8000)bin+=String.fromCharCode.apply(null,bytes.subarray(i,i+0x8000));return btoa(bin)};
 const fileb64=f=>new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result.split(',')[1]);r.onerror=()=>rej(new Error('Không đọc được tệp'));r.readAsDataURL(f)});
 
@@ -394,7 +403,7 @@ $('#push').onclick=async()=>{
     let path,k=1;
     do{path=`${cfg.notesDir||'notes'}/${slug(n.title)}${k>1?'-'+k:''}${ext}`;k++}while(notes.some(x=>x.id!==n.id&&x.gh===path));
     const res=await put(path,utf8b64(n.body),`Cập nhật ghi chú: ${n.title||'Chưa đặt tiêu đề'}`);
-    n.commit=res.commit&&res.commit.sha; const old=n.gh; if(old&&old!==path)await remove(old,'Đổi tên ghi chú').catch(()=>{}); n.gh=path; await writeMan(d=>{d[path]=n.title||'';if(old&&old!==path)delete d[old]},'Cập nhật tiêu đề').catch(()=>{}); save(); renderList(); toast('Đã lưu lên GitHub: '+path);
+    let tw=true; n.commit=res.commit&&res.commit.sha; const old=n.gh; if(old&&old!==path)await remove(old,'Đổi tên ghi chú').catch(()=>{}); n.gh=path; await writeMan(d=>{d[path]=n.title||'';if(old&&old!==path)delete d[old]},'Cập nhật tiêu đề').catch(()=>{tw=false}); save(); renderList(); toast(tw?'Đã lưu lên GitHub: '+path:'Đã lưu ghi chú nhưng chưa ghi được tiêu đề công khai. Hãy bấm Lưu lên GitHub thêm lần nữa.');
   }catch(e){toast('Không lưu được: '+e.message)}
   btn.disabled=false; $('#push .l').textContent='Lưu lên GitHub';
 };
@@ -493,12 +502,12 @@ $('#pull').onclick=async()=>{
     if(r.status===404){toast('Chưa có thư mục ghi chú trên GitHub');return}
     if(!r.ok)throw new Error(await errMsg(r));
     const files=(await jf(r)).filter(f=>f.type==='file'&&/\.(txt|md)$/i.test(f.name));
-    let add=0,upd=0,skip=0; const man=await readMan();
+    let add=0,upd=0,skip=0; const man=await readMan().catch(()=>({}));
     for(const f of files){
       const rr=await fetch(f.url,{cache:'no-store',headers:{Authorization:'Bearer '+cfg.token,Accept:'application/vnd.github.raw+json'}});
       if(!rr.ok)continue; const text=await rr.text();
       const n=notes.find(x=>x.gh===f.path);
-      if(!n){notes.push({id:Date.now().toString(36)+add,title:man[f.path]||f.name.replace(/\.(txt|md)$/i,''),body:text,updated:Date.now(),gh:f.path});add++}
+      if(!n){notes.push({id:Date.now().toString(36)+add,title:man[f.path]||prettyName(f.name),body:text,updated:Date.now(),gh:f.path});add++}
       else if(n.body!==text){if(confirm(`"${n.title||f.name}" khác bản trên GitHub. Ghi đè bản trên máy này?`)){n.body=text;n.updated=Date.now();upd++}else skip++}
     }
     save(); renderList(); if(curId)open(curId);
@@ -592,6 +601,7 @@ async function restore(){
   }catch{forget()}
 }
 
+const prettyName=f=>{const t=f.replace(/\.(txt|md)$/i,'').replace(/-/g,' ');return t.charAt(0).toUpperCase()+t.slice(1)};
 /* ===== Chế độ khách: chỉ đọc ghi chú công khai; chỉnh sửa cần đăng nhập ===== */
 let lastAuth=null,gNotes=[],gLoading=false,gErr='';
 const authed=()=>!!cfg.token;
@@ -624,7 +634,7 @@ async function loadPublic(){
   gLoading=true; renderList();
   try{
     const base=`https://raw.githubusercontent.com/${k.o}/${k.r}/${encodeURIComponent(k.b)}/`;
-    let man={}; try{const r=await fetch(base+enc(k.d)+'/.titles.json?_='+Math.floor(Date.now()/60000));if(r.ok)man=await r.json()}catch{}
+    const stamp=Date.now(); let man={}; try{const r=await fetch(base+enc(k.d)+'/.titles.json?_='+stamp);if(r.ok)man=await r.json()}catch{}
     let items=[],apiOk=false;
     try{
       const r=await fetch(`https://api.github.com/repos/${k.o}/${k.r}/contents/${enc(k.d)}?ref=${encodeURIComponent(k.b)}`);
@@ -634,7 +644,7 @@ async function loadPublic(){
     if(!apiOk&&!items.length)throw new Error('no data');
     items=items.slice(0,100);
     const out=[]; let i=0;
-    const worker=async()=>{while(i<items.length){const p=items[i++];try{const r=await fetch(base+enc(p));if(r.ok)out.push({id:'g:'+p,title:man[p]||p.split('/').pop().replace(/\.(txt|md)$/i,''),body:await r.text(),gh:p})}catch{}}};
+    const worker=async()=>{while(i<items.length){const p=items[i++];try{const r=await fetch(base+enc(p)+'?_='+stamp);if(r.ok)out.push({id:'g:'+p,title:man[p]||prettyName(p.split('/').pop()),body:await r.text(),gh:p})}catch{}}};
     await Promise.all(Array.from({length:Math.min(6,items.length)},worker));
     if(authed())return;
     gNotes=out; gLoading=false; renderList();
