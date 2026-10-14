@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Sổ tay - Ghi chú và kho tệp GitHub</title>
 <meta name="author" content="Đặng Minh Đông">
-<meta name="version" content="1.4">
+<meta name="version" content="1.6">
 <meta name="copyright" content="© 2026 Đặng Minh Đông">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -52,25 +52,26 @@ aside{display:flex;flex-direction:column}
 .srch:focus{border-color:var(--acc);background:var(--panel);box-shadow:0 0 0 4px var(--accsoft)}
 .list{flex:1;overflow:auto;padding:0 10px 10px;overscroll-behavior:contain}
 .item{position:relative;display:block;width:100%;text-align:left;border:0;background:transparent;border-radius:14px;padding:12px 16px;margin-bottom:3px;transition:background-color .2s,transform .18s var(--ease)}
-.item:hover{background:var(--soft)}
+.item:hover{background:var(--soft);transform:translateX(2px)}
 .item:active{transform:scale(.985)}
 .item.on{background:var(--accsoft)}
 .item::before{content:"";position:absolute;left:5px;top:14px;bottom:14px;width:3px;border-radius:3px;background:var(--acc);transform:scaleY(0);transition:transform .3s var(--ease)}
 .item.on::before{transform:scaleY(1)}
 .item b{display:block;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.item span{display:block;color:var(--mute);font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item span{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;color:var(--mute);font-size:13.5px;line-height:1.45;margin:2px 0 3px}
 .item small{color:var(--mute);font-size:12px}
 .empty{color:var(--mute);text-align:center;padding:40px 20px;font-size:14.5px}
 .side-foot{padding:12px 16px 16px;border-top:1px solid var(--line)}
 .side-foot .btn{width:100%;padding:11px}
-main{display:flex;flex-direction:column}
+main{display:flex;flex-direction:column;position:relative}
+main::before{content:"";position:absolute;inset:0 0 auto 0;height:3px;z-index:2;background:linear-gradient(90deg,var(--acc),var(--acc2),#14b8a6)}
 .bar{display:flex;align-items:center;gap:8px;padding:12px 18px;border-bottom:1px solid var(--line);flex-wrap:wrap}
 .bar .sp{flex:1}
 #menu{display:none;width:auto;padding:0 12px;gap:6px}
 .st{display:flex;align-items:center;gap:9px;color:var(--mute);font-size:13.5px}
 .dot{width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 3px rgba(34,197,94,.2)}
 .acts{display:flex;gap:6px;flex-wrap:wrap}
-.edit{flex:1;display:flex;flex-direction:column;width:100%;max-width:800px;margin:0 auto;padding:36px 28px 0;min-height:0}
+.edit{flex:1;display:flex;flex-direction:column;width:calc(100% - 44px);max-width:800px;margin:22px auto;padding:34px 34px 0;min-height:0;background:var(--panel);border:1px solid var(--line);border-radius:22px;box-shadow:var(--sh)}
 .edit:not(.hide),.files:not(.hide){animation:viewIn .32s var(--ease)}
 .edit.swap{animation:viewIn .26s var(--ease)}
 #title{border:0;background:transparent;font-size:38px;font-weight:700;letter-spacing:-.02em;line-height:1.2;padding:0;outline:none;width:100%;caret-color:var(--acc)}
@@ -130,6 +131,17 @@ dialog input:focus{border-color:var(--acc);background:var(--panel);box-shadow:0 
 .cstate{display:flex;align-items:center;gap:10px;background:var(--accsoft);border-radius:13px;padding:8px 8px 8px 14px;margin-bottom:12px;font-size:14px;font-weight:700}
 .cstate span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .linkbtn{border:0;background:none;color:var(--acc);font-weight:700;padding:0;text-decoration:underline;font-size:13px}
+.lgrow{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap}
+.chk{display:flex;align-items:center;gap:8px;margin:0;font-size:13.5px;font-weight:700;cursor:pointer}
+dialog .chk input{width:auto;padding:0;margin:0;accent-color:var(--acc);box-shadow:none}
+.lh{padding:0 26px 6px;color:var(--mute);font-size:12.5px;font-weight:700}
+::selection{background:var(--accsoft)}
+.boot aside,.boot main{visibility:hidden}
+.gl{display:none}
+.guest .tabs,.guest .side-foot,.guest #push,.guest #pull,.guest #del,.guest .dot,.guest #saved{display:none}
+.guest .gl{display:inline;font-size:14px}
+.guest #cfgBtn{display:inline-flex;align-items:center;gap:7px;width:auto;padding:0 14px;font-weight:700;color:var(--acc-ink);background:linear-gradient(135deg,var(--acc),var(--acc2));border-color:transparent;box-shadow:0 8px 18px -8px var(--acc)}
+.guest #body{font-size:18px;line-height:1.95}
 @keyframes pop{from{opacity:0;transform:translateY(14px) scale(.96)}to{opacity:1;transform:none}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes viewIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
@@ -143,20 +155,20 @@ aside.open{transform:none}
 #scrim{display:block;position:fixed;inset:0;background:rgba(8,10,20,.5);opacity:0;pointer-events:none;transition:opacity .3s;z-index:4}
 aside.open~#scrim{opacity:1;pointer-events:auto}
 #menu{display:inline-flex}
-.edit{padding:22px 18px 0}#title{font-size:28px}.bar{padding:10px 12px}.files{padding:18px}
+.edit{width:100%;margin:0;padding:22px 18px 0;background:transparent;border:0;border-radius:0;box-shadow:none}#title{font-size:28px}.bar{padding:10px 12px}.files{padding:18px}
 .btn .l{display:none}.btn{padding:9px 11px}.cp .btn{padding:9px 12px}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
 </head>
-<body>
+<body class="boot">
 <div class="app">
 <aside id="side">
   <div class="top">
     <div class="logo"><svg class="i" viewBox="0 0 24 24"><path d="M5 4h11a3 3 0 013 3v13H8a3 3 0 01-3-3z"/><path d="M9 9h6M9 13h4"/></svg></div>
     <div class="brand"><b>Sổ tay</b><small>Ghi chú và kho tệp GitHub</small></div>
     <button class="ib" id="theme" title="Đổi giao diện sáng/tối" aria-label="Đổi giao diện"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 010 18z" fill="currentColor"/></svg></button>
-    <button class="ib" id="cfgBtn" title="Kết nối GitHub" aria-label="Kết nối GitHub"><svg class="i" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9m-3 3l3 3"/></svg></button>
+    <button class="ib" id="cfgBtn" title="Kết nối GitHub" aria-label="Kết nối GitHub"><svg class="i" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9m-3 3l3 3"/></svg><span class="gl">Đăng nhập</span></button>
   </div>
   <div class="tabs">
     <button id="tN" class="on">Ghi chú</button>
@@ -164,6 +176,7 @@ aside.open~#scrim{opacity:1;pointer-events:auto}
   </div>
   <div id="pN" style="display:flex;flex-direction:column;flex:1;min-height:0">
     <div class="sw"><svg class="i" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input class="srch" id="q" placeholder="Tìm ghi chú…" type="search"></div>
+    <div class="lh" id="lcount"></div>
     <div class="list" id="list"></div>
     <div class="side-foot"><button class="btn pri" id="newBtn"><svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><span class="l">Ghi chú mới</span></button></div>
   </div>
@@ -217,7 +230,7 @@ aside.open~#scrim{opacity:1;pointer-events:auto}
     <div><b>Đăng nhập nhanh bằng file</b><small>Chọn hoặc kéo thả file .json hoặc file khóa truy cập vào đây</small></div>
     <input type="file" id="lgFile" accept=".json,application/json" hidden>
   </div>
-  <div style="text-align:right;margin-top:8px"><button type="button" class="linkbtn" id="lgTpl">Tải file mẫu .json</button></div>
+  <div class="lgrow"><label class="chk"><input type="checkbox" id="lgRem" checked><span>Ghi nhớ đăng nhập đến khi đăng xuất</span></label><button type="button" class="linkbtn" id="lgTpl">Tải file mẫu .json</button></div>
   <div class="or">hoặc nhập thủ công</div>
   <label for="cT">Personal access token</label><input id="cT" type="password" autocomplete="off" placeholder="github_pat_… (để trống nếu giữ token đã mã hóa)">
   <label for="cP">Mật khẩu mã hóa token (khuyên dùng)</label><input id="cP" type="password" autocomplete="new-password" placeholder="Token được mã hóa AES-256, mỗi phiên nhập 1 lần">
@@ -260,6 +273,10 @@ aside.open~#scrim{opacity:1;pointer-events:auto}
 <div id="toast" role="status"></div>
 
 <script>
+/* ===== CẤU HÌNH KHO CÔNG KHAI (chủ trang điền 1 lần) =====
+   Khách chưa đăng nhập sẽ đọc ghi chú từ repo này (repo phải ở chế độ công khai).
+   Có thể bỏ trống và dùng link dạng  trang-cua-ban/?repo=owner/repo@main  */
+const SITE={owner:'mjnhdong',repo:'mjnhdong.github.io',branch:'main',notesDir:'notes'};
 const $=s=>document.querySelector(s);
 const store={get(k){try{return JSON.parse(localStorage.getItem(k))}catch{return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}};
 let notes=store.get('so.notes')||[], curId=null, tab='N';
@@ -278,12 +295,17 @@ $('#theme').onclick=()=>{root.classList.add('theming');setTimeout(()=>root.class
 
 /* Notes */
 function renderList(){
-  const q=$('#q').value.trim().toLowerCase();
-  const arr=[...notes].sort((a,b)=>b.updated-a.updated).filter(n=>!q||(n.title+n.body).toLowerCase().includes(q));
-  $('#list').innerHTML=arr.length?arr.map(n=>`<button class="item ${n.id===curId?'on':''}" data-id="${n.id}"><b>${esc(n.title||'Chưa đặt tiêu đề')}</b><span>${esc(n.body.slice(0,80).replace(/\n/g,' ')||'Ghi chú trống')}</span><small>${fmt(n.updated)}${n.gh?' · đã lên GitHub':''}</small></button>`).join(''):`<div class="empty">${q?'Không có ghi chú khớp từ khóa.':'Chưa có ghi chú nào. Bấm “Ghi chú mới” để bắt đầu.'}</div>`;
+  const g=!authed(), q=$('#q').value.trim().toLowerCase();
+  if(g&&gLoading){$('#lcount').textContent='';$('#list').innerHTML='<div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div>';return}
+  let arr=[...src()];
+  arr=g?arr.sort((a,b)=>a.title.localeCompare(b.title,'vi')):arr.sort((a,b)=>b.updated-a.updated);
+  arr=arr.filter(n=>!q||(n.title+' '+n.body).toLowerCase().includes(q));
+  $('#lcount').textContent=arr.length?`${arr.length} ghi chú`:'';
+  const msg=g&&gErr?gErr:q?'Không có ghi chú khớp từ khóa.':g?'Chưa có ghi chú công khai nào.':'Chưa có ghi chú nào. Bấm “Ghi chú mới” để bắt đầu.';
+  $('#list').innerHTML=arr.length?arr.map(n=>`<button class="item ${n.id===curId?'on':''}" data-id="${esc(n.id)}"><b>${esc(n.title||'Chưa đặt tiêu đề')}</b><span>${esc(n.body.slice(0,140).replace(/\\n/g,' ')||'Ghi chú trống')}</span>${n.updated?`<small>${fmt(n.updated)}${n.gh?' · đã lên GitHub':''}</small>`:''}</button>`).join(''):`<div class="empty">${esc(msg)}</div>`;
 }
 function open(id){
-  const n=notes.find(x=>x.id===id); if(!n)return; curId=id;
+  const n=src().find(x=>x.id===id); if(!n)return; curId=id;
   $('#title').value=n.title; $('#body').value=n.body; stat(); markOn(); $('#side').classList.remove('open');
   const v=$('#vN'); v.classList.remove('swap'); void v.offsetWidth; v.classList.add('swap');
 }
@@ -295,7 +317,7 @@ const markOn=()=>document.querySelectorAll('.item').forEach(e=>e.classList.toggl
 function stat(){
   const b=$('#body').value, w=b.trim()?b.trim().split(/\s+/).length:0;
   $('#stat').textContent=`${w} từ, ${b.length} ký tự`;
-  const n=cur(); $('#meta').innerHTML=n?`Cập nhật ${fmt(n.updated)}${n.gh?` <button class="chip" data-share title="Lấy link chia sẻ">${esc(n.gh)}</button>`:''}`:'';
+  const n=cur(); $('#meta').innerHTML=n?`${n.updated?'Cập nhật '+fmt(n.updated):'Ghi chú công khai'}${n.gh?` <button class="chip" data-share title="Lấy link chia sẻ">${esc(n.gh)}</button>`:''}`:'';
 }
 function edit(){
   const n=notes.find(x=>x.id===curId); if(!n)return;
@@ -324,7 +346,7 @@ $('#dnBoth').onclick=async()=>{
   b.disabled=false; b.textContent='Xóa cả trên GitHub';
 };
 $('#dnCancel').onclick=()=>$('#delDlg').close();
-const cur=()=>notes.find(n=>n.id===curId);
+const cur=()=>src().find(n=>n.id===curId);
 $('#copy').onclick=async()=>{try{await navigator.clipboard.writeText($('#body').value);toast('Đã sao chép nội dung')}catch{toast('Trình duyệt không cho phép sao chép')}};
 $('#dl').onclick=()=>{const n=cur();const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([n.body],{type:'text/plain;charset=utf-8'}));a.download=fileName(n.title)+'.txt';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)};
 
@@ -333,7 +355,7 @@ const ready=async()=>{
   if(!(cfg.owner&&cfg.repo&&(cfg.token||cfg.vault))){toast('Hãy nhập thông tin GitHub trước');$('#dlg').showModal();return false}
   if(!cfg.token&&cfg.vault){const pw=await askPw();if(!pw)return false;try{cfg.token=await unseal(cfg.vault,pw);mark()}catch{toast('Sai mật khẩu');return false}}
   return true};
-const persist=()=>{const c={...cfg};if(c.vault||c.session)delete c.token;delete c.session;store.set('so.cfg',c)};
+const persist=()=>{const c={...cfg};if(c.vault||c.session)delete c.token;delete c.session;delete c.remembered;store.set('so.cfg',c)};
 const safeFetch=(u,o)=>fetch(u,o).catch(()=>{throw new Error('Không kết nối được tới api.github.com. Kiểm tra mạng, hoặc trang đang chạy trong môi trường chặn kết nối ngoài.')});
 const jf=async r=>{const t=await r.text();try{return JSON.parse(t)}catch{throw new Error('Phản hồi không phải JSON (HTTP '+r.status+'): '+t.slice(0,90).replace(/\s+/g,' '))}};
 const api=(path,o={})=>safeFetch(`https://api.github.com/repos/${encodeURIComponent(cfg.owner)}/${encodeURIComponent(cfg.repo)}/contents/${path.split('/').filter(Boolean).map(encodeURIComponent).join('/')}${o.q||''}`,{method:o.method||'GET',body:o.body,cache:'no-store',headers:{Authorization:'Bearer '+cfg.token,Accept:'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'}});
@@ -394,7 +416,7 @@ async function upload(files){
 }
 const fileMap={};
 const enc=p=>p.split('/').map(encodeURIComponent).join('/');
-const cdn=(path,ref)=>`https://cdn.jsdelivr.net/gh/${cfg.owner}/${cfg.repo}@${encodeURIComponent(ref||cfg.branch)}/${enc(path)}`;
+const cdn=(path,ref)=>{const k=site();return `https://cdn.jsdelivr.net/gh/${k.o}/${k.r}@${encodeURIComponent(ref||k.b)}/${enc(path)}`};
 const sz=n=>n>1048576?(n/1048576).toFixed(1)+' MB':Math.max(1,Math.round(n/1024))+' KB';
 async function loadFiles(){
   const box=$('#fl'); if(!await ready()){box.innerHTML='<div class="empty">Chưa kết nối GitHub. Bấm biểu tượng chìa khóa để nhập thông tin.</div>';return}
@@ -426,7 +448,7 @@ async function copyText(t,btn){
 document.addEventListener('click',e=>{const b=e.target.closest('[data-copy]');if(b)copyText($('#'+b.dataset.copy).value,b)});
 $('#share').onclick=()=>{
   const n=cur(); if(!n)return;
-  if(!cfg.owner||!cfg.repo){toast('Hãy nhập thông tin GitHub trước');$('#dlg').showModal();return}
+  if(!site().o||!site().r){toast('Chưa cấu hình kho GitHub');return}
   if(!n.gh){toast('Hãy bấm “Lưu lên GitHub” trước để có link chia sẻ');return}
   showShare({name:n.title||'Chưa đặt tiêu đề',path:n.gh,commit:n.commit});
 };
@@ -487,9 +509,11 @@ $('#pull').onclick=async()=>{
 
 /* Đăng nhập bằng file JSON */
 function mark(){
-  const on=!!cfg.token; $('#cfgBtn').classList.toggle('ok',on);
-  const el=$('#cfgState'); el.classList.toggle('hide',!on);
-  el.firstElementChild.textContent=on?`Đang đăng nhập: ${cfg.owner||'?'}/${cfg.repo||'?'}${cfg.session?' (chỉ trong phiên này)':''}`:'';
+  const on=!!cfg.token, locked=!on&&!!cfg.vault; $('#cfgBtn').classList.toggle('ok',on);
+  const el=$('#cfgState'); el.classList.toggle('hide',!(on||locked));
+  el.firstElementChild.textContent=on?`Đang đăng nhập: ${cfg.owner||'?'}/${cfg.repo||'?'}${cfg.session?(cfg.remembered?' (đã ghi nhớ trên thiết bị này)':' (chỉ trong phiên này)'):''}`:locked?'Có token đã mã hóa trên thiết bị này':'';
+  const b=$('#lgOut'); b.textContent=locked?'Mở khóa':'Đăng xuất'; b.classList.toggle('dan',!locked); b.classList.toggle('pri',locked);
+  applyAuth();
 }
 async function loginFile(f){
   if(!f)return;
@@ -513,8 +537,10 @@ async function loginFile(f){
     const r=await safeFetch(`https://api.github.com/repos/${encodeURIComponent(o)}/${encodeURIComponent(rp)}`,{cache:'no-store',headers:{Authorization:'Bearer '+tok,Accept:'application/vnd.github+json'}});
     if(!r.ok)throw new Error(r.status===401?'Token sai hoặc đã hết hạn':r.status===404?'Không tìm thấy repo, hãy kiểm tra owner/repo và quyền của token':await errMsg(r));
     const info=await jf(r);
-    cfg=next; persist(); mark(); $('#dlg').close();
-    toast(`Đã đăng nhập: ${o}/${rp}`+(info.private?'. Repo riêng tư nên link jsDelivr sẽ không mở được':''));
+    cfg=next; let rem=false;
+    if($('#lgRem').checked)rem=await remember({token:tok,owner:o,repo:rp,branch:next.branch,notesDir:next.notesDir,filesDir:next.filesDir}); else await forget();
+    cfg.remembered=rem; persist(); mark(); $('#dlg').close();
+    toast(`Đã đăng nhập: ${o}/${rp}`+(rem?'. Đã ghi nhớ trên thiết bị này':'')+(info.private?'. Repo riêng tư nên link jsDelivr sẽ không mở được':''));
     if(tab==='F')loadFiles();
   }catch(e){cfg=prev;mark();toast('Đăng nhập thất bại: '+e.message)}
   finally{box.classList.remove('busy')}
@@ -531,7 +557,7 @@ $('#lgTpl').onclick=()=>{
   a.href=URL.createObjectURL(new Blob([JSON.stringify({token:'github_pat_xxx',owner:'ten-tai-khoan',repo:'ten-repo',branch:'main',notesDir:'notes',filesDir:'files'},null,2)],{type:'application/json'}));
   a.download='so-tay-github.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);
 };
-$('#lgOut').onclick=()=>{delete cfg.token;cfg.session=false;persist();mark();$('#cT').value='';toast(cfg.vault?'Đã đăng xuất, token mã hóa vẫn còn trên máy':'Đã đăng xuất')};
+$('#lgOut').onclick=async()=>{if(!cfg.token&&cfg.vault){if(await ready()){$('#dlg').close();toast('Đã mở khóa')}return} await forget();delete cfg.token;cfg.session=false;cfg.remembered=false;persist();mark();$('#cT').value='';toast(cfg.vault?'Đã đăng xuất, token mã hóa vẫn còn trên máy':'Đã đăng xuất')};
 
 $('#lgKey').onclick=async()=>{
   const tok=$('#cT').value.trim()||cfg.token, pw=$('#cP').value, o=$('#cO').value.trim(), rp=$('#cR').value.trim();
@@ -542,6 +568,82 @@ $('#lgKey').onclick=async()=>{
   a.download='so-tay-khoa-truy-cap.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);
   toast('Đã tạo file khóa. Hãy nhớ mật khẩu, mất mật khẩu thì không mở lại được');
 };
+
+/* Ghi nhớ đăng nhập: khóa AES không xuất được, cất trong IndexedDB; dữ liệu mã hóa cất trong localStorage */
+const idb=()=>new Promise((res,rej)=>{const r=indexedDB.open('so-tay',1);r.onupgradeneeded=()=>r.result.createObjectStore('k');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});
+const idbDo=async(mode,fn)=>{const d=await idb();return new Promise((res,rej)=>{const t=d.transaction('k',mode),q=fn(t.objectStore('k'));t.oncomplete=()=>res(q&&q.result);t.onerror=()=>rej(t.error)})};
+async function remember(creds){
+  try{
+    const key=await crypto.subtle.generateKey({name:'AES-GCM',length:256},false,['encrypt','decrypt']);
+    const iv=crypto.getRandomValues(new Uint8Array(12));
+    const ct=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv},key,new TextEncoder().encode(JSON.stringify(creds))));
+    await idbDo('readwrite',o=>o.put(key,'key'));
+    store.set('so.rem',{iv:b64e(iv),ct:b64e(ct)}); return true;
+  }catch{return false}
+}
+async function forget(){try{localStorage.removeItem('so.rem')}catch{} try{await idbDo('readwrite',o=>o.delete('key'))}catch{}}
+async function restore(){
+  const v=store.get('so.rem'); if(!v)return;
+  try{
+    const key=await idbDo('readonly',o=>o.get('key')); if(!key)throw 0;
+    const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:b64d(v.iv)},key,b64d(v.ct));
+    cfg={...cfg,...JSON.parse(new TextDecoder().decode(pt)),session:true,remembered:true};
+    mark(); if(tab==='F')loadFiles();
+  }catch{forget()}
+}
+
+/* ===== Chế độ khách: chỉ đọc ghi chú công khai; chỉnh sửa cần đăng nhập ===== */
+let lastAuth=null,gNotes=[],gLoading=false,gErr='';
+const authed=()=>!!cfg.token;
+const src=()=>authed()?notes:gNotes;
+function site(){
+  if(authed()&&cfg.owner&&cfg.repo)return{o:cfg.owner,r:cfg.repo,b:cfg.branch||'main',d:cfg.notesDir||'notes'};
+  let o=SITE.owner,r=SITE.repo,b=SITE.branch||'main',d=SITE.notesDir||'notes';
+  const q=new URLSearchParams(location.search).get('repo');
+  const m=q&&q.match(/^([^\/@\s]+)\/([^\/@\s]+)(?:@(\S+))?$/);
+  if(!(o&&r)&&m){o=m[1];r=m[2];b=m[3]||b}
+  if(!(o&&r)&&cfg.owner&&cfg.repo){o=cfg.owner;r=cfg.repo;b=cfg.branch||b;d=cfg.notesDir||d}
+  return{o,r,b,d};
+}
+function applyAuth(){
+  const a=authed(); document.body.classList.remove('boot');
+  if(a===lastAuth)return; lastAuth=a;
+  document.body.classList.toggle('guest',!a);
+  $('#title').readOnly=!a; $('#body').readOnly=!a;
+  $('#title').placeholder=a?'Tiêu đề':''; $('#body').placeholder=a?'Viết gì đó… mọi thay đổi được tự động lưu trên trình duyệt.':'';
+  $('.brand small').textContent=a?'Ghi chú và kho tệp GitHub':'Ghi chú công khai';
+  $('#cfgBtn').title=a?'Kết nối GitHub':'Đăng nhập'; $('#dlg h2').textContent=a?'Kết nối GitHub':'Đăng nhập chủ sở hữu';
+  if(!a&&tab==='F')setTab('N');
+  curId=null; $('#q').value='';
+  if(a){renderList(); notes.length?open([...notes].sort((x,y)=>y.updated-x.updated)[0].id):create()}
+  else{$('#title').value='';$('#body').value='';stat();loadPublic()}
+}
+async function loadPublic(){
+  const k=site(); gNotes=[]; gErr='';
+  if(!(k.o&&k.r)){gErr='Trang chưa được cấu hình kho công khai. Chủ trang hãy điền owner/repo ở đầu mã (mục SITE) hoặc đăng nhập để bắt đầu.';renderList();return}
+  gLoading=true; renderList();
+  try{
+    const base=`https://raw.githubusercontent.com/${k.o}/${k.r}/${encodeURIComponent(k.b)}/`;
+    let man={}; try{const r=await fetch(base+enc(k.d)+'/.titles.json?_='+Math.floor(Date.now()/60000));if(r.ok)man=await r.json()}catch{}
+    let items=[],apiOk=false;
+    try{
+      const r=await fetch(`https://api.github.com/repos/${k.o}/${k.r}/contents/${enc(k.d)}?ref=${encodeURIComponent(k.b)}`);
+      if(r.ok){apiOk=true;items=(await r.json()).filter(f=>f.type==='file'&&/\.(txt|md)$/i.test(f.name)).map(f=>f.path)}
+    }catch{}
+    if(!apiOk)items=Object.keys(man);
+    if(!apiOk&&!items.length)throw new Error('no data');
+    items=items.slice(0,100);
+    const out=[]; let i=0;
+    const worker=async()=>{while(i<items.length){const p=items[i++];try{const r=await fetch(base+enc(p));if(r.ok)out.push({id:'g:'+p,title:man[p]||p.split('/').pop().replace(/\.(txt|md)$/i,''),body:await r.text(),gh:p})}catch{}}};
+    await Promise.all(Array.from({length:Math.min(6,items.length)},worker));
+    if(authed())return;
+    gNotes=out; gLoading=false; renderList();
+    const first=[...gNotes].sort((a,b)=>a.title.localeCompare(b.title,'vi'))[0]; if(first)open(first.id);
+  }catch{
+    if(authed())return;
+    gLoading=false; gErr='Không tải được ghi chú công khai. Hãy chắc chắn repo ở chế độ công khai (public) và đúng owner/repo.'; renderList();
+  }
+}
 
 /* Tabs */
 function setTab(t){
@@ -559,17 +661,18 @@ document.addEventListener('click',e=>{if(innerWidth<=760&&!e.target.closest('#si
 
 /* Config dialog */
 $('#cfgBtn').onclick=()=>{mark();
-  $('#cT').value=cfg.vault?'':(cfg.token||'');$('#cP').value='';$('#cO').value=cfg.owner||'';$('#cR').value=cfg.repo||'';
+  $('#cT').value=(cfg.vault||cfg.session)?'':(cfg.token||'');$('#cP').value='';$('#cO').value=cfg.owner||'';$('#cR').value=cfg.repo||'';
   $('#cB').value=cfg.branch||'';$('#cN').value=cfg.notesDir||'';$('#cF').value=cfg.filesDir||'';
   $('#dlg').showModal();
 };
 $('#saveCfg').onclick=async()=>{
   const tok=$('#cT').value.trim(),pw=$('#cP').value;
+  if(tok)await forget();
   let o=$('#cO').value.trim(),rp=$('#cR').value.trim();
   const m=(rp||o).match(/github\.com\/([^\/\s]+)\/([^\/\s#?]+)/i); if(m){o=m[1];rp=m[2]}
   if(o.includes('/')&&!rp)[o,rp]=o.split('/');
   rp=rp.replace(/\.git$/i,'').replace(/\s+/g,'');o=o.replace(/\s+/g,'');
-  const next={owner:o,repo:rp,branch:$('#cB').value.trim()||'main',notesDir:$('#cN').value.trim()||'notes',filesDir:$('#cF').value.trim()||'files',vault:cfg.vault,token:tok||cfg.token,session:!!cfg.session&&!tok};
+  const next={owner:o,repo:rp,branch:$('#cB').value.trim()||'main',notesDir:$('#cN').value.trim()||'notes',filesDir:$('#cF').value.trim()||'files',vault:cfg.vault,token:tok||cfg.token,session:!!cfg.session&&!tok,remembered:!!cfg.remembered&&!tok};
   if(tok&&pw)next.vault=await seal(tok,pw); else if(tok)delete next.vault;
   cfg=next; persist();
   mark(); toast(cfg.session?'Đã lưu cấu hình (token chỉ giữ trong phiên này)':cfg.vault?'Đã lưu, token được mã hóa':'Đã lưu (token chưa mã hóa)'); if(tab==='F')setTimeout(loadFiles,50);
@@ -577,14 +680,12 @@ $('#saveCfg').onclick=async()=>{
 
 /* Shortcuts */
 document.addEventListener('keydown',e=>{
-  if((e.ctrlKey||e.metaKey)&&e.key==='s'){e.preventDefault();edit();toast('Đã lưu trên trình duyệt')}
+  if((e.ctrlKey||e.metaKey)&&e.key==='s'){e.preventDefault();if(authed()){edit();toast('Đã lưu trên trình duyệt')}}
 });
 
 /* Init */
 $('#ver').textContent='v'+document.querySelector('meta[name=version]').content;
-mark();
-renderList();
-notes.length?open([...notes].sort((a,b)=>b.updated-a.updated)[0].id):create();
+(async()=>{try{await restore()}catch{} mark()})();
 </script>
 </body>
 </html>
