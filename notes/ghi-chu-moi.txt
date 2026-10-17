@@ -1,2 +1,0 @@
-// ================= THÔNG TIN KẾT NỐI MYSQL =================
-Test terr
